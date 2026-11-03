@@ -9,6 +9,12 @@
 ## Pola Arsitektur
 **Local-First / Offline-First** dengan **Approval Workflow**: pengguna tidak pernah menulis ke data master; semua perubahan pengguna masuk antrean pengajuan dan hanya admin yang menyetujui atau mengubah langsung.
 
+## Gaya Komunikasi (wajib)
+Hemat konteks: jawaban singkat dan langsung ke inti. Jangan mengulang isi file, menempel ulang
+kode yang sudah ada, atau menulis ringkasan langkah yang baru saja dikerjakan. Tanpa pembuka
+("Baik, saya akan..."), tanpa penutup yang mengulang. Sebut hanya yang berubah dan apa langkah
+berikutnya. Kutip kode hanya bila memang perlu dibahas.
+
 ---
 
 ## Bagian 1 — Desain & Struktur Database (Supabase Cloud)
@@ -25,6 +31,8 @@ Implementasi ada di `supabase/migrations/`:
 | `0001_init.sql` | domain enum, tabel, constraint, index |
 | `0002_security.sql` | grants, RLS, function atomik, trigger, view, Storage, realtime |
 | `0003_seed.sql` | data awal 3 Lab (menggantikan seed dari kode) |
+| `0004_hardening.sql` | tutup eskalasi role lewat signup, perbaiki ambiguitas kolom di `sibal_report_issue` |
+| `0005_workflow_fixes.sql` | perbaiki alur periksa→approve, pemulihan status saat reject, buku stok di `complete` |
 
 Tabel: `labs`, `profiles`, `pcs`, `supporting_items`, `reports`, `report_witness`,
 `maintenance_histories`, `announcements`.
@@ -89,6 +97,19 @@ Auth — identitas user Retool dikelola Retool. Jangan pernah memasukkan `servic
   - **Periksa** → `SELECT * FROM public.sibal_check_report(p_report_id := {{ id }}, p_operator_email := {{ currentEmail }})`
   - **Approve** → `sibal_approve_report(p_report_id, p_action_taken, p_kind, p_asset_status, p_performed_by, p_qty_delta, p_operator_email)`
   - **Reject** → `sibal_reject_report(p_report_id, p_reason, p_operator_email)`
+- Dua aturan yang mudah salah di tab ini:
+  - `p_asset_status` pada **Approve** hanya menerima `rusak` atau `diperiksa`. Kembali ke `baik`
+    adalah pekerjaan `sibal_complete_maintenance`, bukan approve.
+  - `p_qty_delta` bergerak dua kali kalau diisi di keduanya. Isi di Approve untuk keputusan
+    stoknya, lalu **biarkan 0** di Complete kecuali ada barang masuk/keluar tambahan saat
+    penutupan. `maintenance_histories.qty_delta` menyimpan total keduanya.
+- **Periksa lalu Approve** adalah urutan normal dan aman: approve memakai ulang pekerjaan
+  `tertunda` milik tiket itu, bukan membuat yang kedua.
+- **Input Retool yang kosong harus jadi `null`, bukan string kosong.** `p_performed_by := ''`
+  gagal dengan SQLSTATE 22P02 karena kolomnya `uuid`. Untuk setiap parameter uuid/integer yang
+  opsional, pakai transformer: `{{ form1.value.performed_by || null }}`. Literal bertanda kutip
+  tanpa cast (`p_report_id := '{{ table1.selectedRow.id }}'`) sudah teruji benar — Postgres
+  menurunkan tipenya dari tanda tangan function.
 - Kolom `status`, `pc_id`, `supporting_item_id`, `target_kind` dibuat **read-only** di grid.
 - `target_kind` adalah *generated column*: jangan pernah masukkan ke daftar kolom INSERT,
   termasuk query INSERT yang di-generate otomatis oleh Retool.
@@ -133,6 +154,14 @@ Aturan ini hasil pembahasan desain dan tidak boleh dilanggar saat implementasi.
   dan kolom `profiles` yang bisa diubah pemiliknya hanya `full_name`, `description`, `avatar_path`
   — itu yang mencegah user menaikkan dirinya jadi admin, bukan policy RLS. Untuk koneksi Retool,
   role `postgres` men-bypass RLS (lihat Bagian 3 Langkah 1).
+- **`raw_user_meta_data` adalah input musuh.** `app.handle_new_user()` dulu membaca `role` dari
+  sana, padahal field itu dikirim klien lewat `signUp(options.data)` — jadi siapa pun bisa
+  mendaftar sebagai admin. Sudah ditutup di `0004_hardening.sql`: signup selalu menghasilkan
+  `role = 'user'`. Jangan pernah mengembalikannya.
+- **Admin pertama di-bootstrap manual**, karena tidak ada jalur resmi untuk mengangkat diri
+  sendiri. Jalankan di SQL Editor dashboard sebagai pemilik database:
+  `update public.profiles set role = 'admin' where username = 'namaadmin';`
+  Setelah itu admin pertama mengangkat admin lain lewat `sibal_set_user_role`.
 - **Login memakai email sintetis:** `lower(username) || '@sibal.invalid'`. Konfirmasinya ada di dua
   tempat yang harus diubah berbarengan: `app.email_for_username()` di SQL dan
   `lib/services/auth_service.dart` di Dart. Matikan "Confirm email" di dashboard Supabase.
@@ -145,16 +174,25 @@ Aturan ini hasil pembahasan desain dan tidak boleh dilanggar saat implementasi.
 
 ## Bagian 6 — Status Pengerjaan
 
-- **Sudah ditulis:** `supabase/migrations/0001_init.sql`, `0002_security.sql`, `0003_seed.sql`.
-  Ketiganya lolos parser grammar PostgreSQL, tapi **belum pernah dijalankan terhadap database
-  mana pun** — isi PL/pgSQL (badan function) tidak ikut tervalidasi oleh parser. Verifikasi nyata
-  terjadi saat di-apply di project Supabase Anda.
-- **Belum:** project Supabase berdiri, Retool tersambung, dan sisi Flutter. Repo `lib/` masih
+- **Database sudah berdiri dan terverifikasi.** Project Supabase region `ap-southeast-1`
+  (ref & connection string ada di `.env`, tidak di-commit). `0001`–`0005` sudah di-apply lewat
+  `supabase db push --remote`. Verifikasi 45 tes: RLS untuk `authenticated` dan `anon`, penolakan
+  eskalasi hak, alur report → check → approve → complete, anti-double-approve, satu tiket terbuka
+  per aset, pemulihan status saat reject/batal, buku stok, dan guard edit status di luar RPC —
+  semuanya lolos, dan data tes sudah dibersihkan sehingga database kembali persis seperti seed.
+- **Dua cacat nyata ditemukan hanya karena dijalankan.** `sibal_report_issue` selalu gagal 42702
+  (kolom OUT `status` bentrok dengan nama kolom) dan signup bisa meminta `role: 'admin'`. Keduanya
+  lolos parser grammar. Pelajarannya: jangan anggap SQL selesai sebelum dieksekusi.
+- **Belum:** Retool tersambung dan sisi Flutter. Repo `lib/` masih
   100% Hive CE lokal: `lib/models/pc_item.dart`, `lib/models/support_item.dart`,
   `lib/models/repair_log.dart` dan tiga halaman CRUD di `lib/pages/`. Belum ada `supabase_flutter`
   di `pubspec.yaml`, belum ada login, splash, Broadcast, grouping Lab, atau halaman Profil.
 - **Urutan kerja yang disepakati** ada di plan `silent-plateau-mullet.md` Bagian F: Langkah 0
   (setup + uji jalur koneksi dari jaringan lab) → migration → seed → Retool → Flutter → uji.
+  **Selesai:** setup, migration, seed. **Berikutnya:** Retool. Yang masih tertunda dari Langkah 0
+  adalah uji `Test-NetConnection aws-0-ap-southeast-1.pooler.supabase.com -Port 5432` **dari
+  perangkat di lab** — koneksi yang terverifikasi sejauh ini adalah dari mesin pengembangan, dan
+  itu belum membuktikan jaringan lab bisa keluar ke internet.
 - **Yang masih harus Anda putuskan:** data PC/barang lama dimigrasi atau seed ulang; admin satu
   orang atau tim; dan apakah fitur "pengambilan barang oleh user" masih diinginkan (skema sekarang
   hanya menyiapkan pengajuan kerusakan).
