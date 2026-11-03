@@ -1,5 +1,5 @@
-name: ltrack
-description: "LTrack - Computer Lab Inventory: Sistem manajemen inventaris laboratorium komputer, spesifikasi PC, barang pendukung, dan log perbaikan teknisi."
+name: sibal
+description: "SIBAL - Sistem Manajemen Laboratorium: spesifikasi PC, barang pendukung lab, dan riwayat perbaikan, dengan pengajuan kerusakan yang ditindaklanjuti admin."
 publish_to: 'none'
 version: 1.0.0+1
 

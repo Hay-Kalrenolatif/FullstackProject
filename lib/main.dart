@@ -16,7 +16,7 @@ void main() async {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'LTrack',
+      title: 'SIBAL',
       theme: ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
@@ -59,14 +59,14 @@ class _OnboardingGateState extends State<OnboardingGate> {
     final prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
     setState(() {
-      _seen = prefs.getBool('ltrack_onboarding_seen') ?? false;
+      _seen = prefs.getBool('sibal_onboarding_seen') ?? false;
       _loading = false;
     });
   }
 
   Future<void> _complete() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('ltrack_onboarding_seen', true);
+    await prefs.setBool('sibal_onboarding_seen', true);
     if (!mounted) return;
     setState(() => _seen = true);
   }

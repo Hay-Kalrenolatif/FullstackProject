@@ -53,7 +53,7 @@ class Logo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              tx('LTrack', 17, w: FontWeight.w700),
+              tx('SIBAL', 17, w: FontWeight.w700),
               tx('SMART LAB', 9, c: mint, w: FontWeight.w600),
             ],
           ),

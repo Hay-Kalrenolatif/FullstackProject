@@ -24,7 +24,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   static const List<_Slide> _slides = [
     _Slide(
       svg: 'assets/images/Data extraction.svg',
-      title: 'Selamat datang di LTrack',
+      title: 'Selamat datang di SIBAL',
       desc: 'Sistem manajemen inventaris laboratorium komputer: spesifikasi PC, barang pendukung, dan log perbaikan teknisi.',
     ),
     _Slide(

@@ -1,4 +1,4 @@
-# LTrack :>
+# SIBAL :>
 
 Sistem manajemen inventaris laboratorium komputer: spesifikasi PC, barang
 pendukung, dan log perbaikan teknisi dengan database lokal (Hive Community
