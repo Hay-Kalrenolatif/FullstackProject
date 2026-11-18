@@ -53,8 +53,39 @@ class _AdminShellState extends State<AdminShell> {
         builder: (context, s) {
           if (!s.isAdmin) return _BukanAdmin(state: s);
 
-          final sempit = MediaQuery.sizeOf(context).width < 980;
+          final w = MediaQuery.sizeOf(context).width;
+          final hp = w < 700;
+          final sempit = w < 980;
           final lebar = sempit ? 78.0 : 236.0;
+
+          // HP: sidebar jadi drawer hamburger; tablet tetap rail ikon;
+          // desktop sidebar penuh. Isi halaman sama untuk ketiganya.
+          if (hp) {
+            return Scaffold(
+              backgroundColor: bg,
+              appBar: AppBar(
+                backgroundColor: card,
+                elevation: 0,
+                scrolledUnderElevation: 0,
+                title: tx(_judul[_tab], 15, w: FontWeight.w700),
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(1),
+                  child: Container(height: 1, color: cardBorder),
+                ),
+              ),
+              drawer: Drawer(
+                width: 264,
+                backgroundColor: card,
+                child: SafeArea(
+                  child: _nav(s, compact: false, onPicked: () => Navigator.pop(context)),
+                ),
+              ),
+              body: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                child: KeyedSubtree(key: ValueKey(_tab), child: _isi),
+              ),
+            );
+          }
 
           return Scaffold(
             backgroundColor: bg,
@@ -66,37 +97,7 @@ class _AdminShellState extends State<AdminShell> {
                     color: card,
                     border: Border(right: BorderSide(color: cardBorder)),
                   ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 18),
-                      if (sempit)
-                        const Center(child: Logo(compact: true))
-                      else
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          child: Row(
-                            children: [
-                              const Logo(),
-                              const SizedBox(width: 4),
-                              tx('ADMIN', 10, c: mint, w: FontWeight.w800),
-                            ],
-                          ),
-                        ),
-                      const SizedBox(height: 22),
-                      for (var i = 0; i < _judul.length; i++)
-                        _NavItem(
-                          label: _judul[i],
-                          icon: _ikon[i],
-                          badge: i == 1 ? s.queue.length : null,
-                          active: _tab == i,
-                          compact: sempit,
-                          onTap: () => setState(() => _tab = i),
-                        ),
-                      const Spacer(),
-                      _Akun(state: s, compact: sempit),
-                      const SizedBox(height: 14),
-                    ],
-                  ),
+                  child: _nav(s, compact: sempit),
                 ),
                 Expanded(
                   child: AnimatedSwitcher(
@@ -108,6 +109,42 @@ class _AdminShellState extends State<AdminShell> {
             ),
           );
         },
+      );
+
+  /// Isi navigasi yang sama untuk sidebar dan drawer.
+  Widget _nav(AdminState s, {required bool compact, VoidCallback? onPicked}) => Column(
+        children: [
+          const SizedBox(height: 18),
+          if (compact)
+            const Center(child: Logo(compact: true))
+          else
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Row(
+                children: [
+                  const Logo(),
+                  const SizedBox(width: 4),
+                  tx('ADMIN', 10, c: mint, w: FontWeight.w800),
+                ],
+              ),
+            ),
+          const SizedBox(height: 22),
+          for (var i = 0; i < _judul.length; i++)
+            _NavItem(
+              label: _judul[i],
+              icon: _ikon[i],
+              badge: i == 1 ? s.queue.length : null,
+              active: _tab == i,
+              compact: compact,
+              onTap: () {
+                setState(() => _tab = i);
+                onPicked?.call();
+              },
+            ),
+          const Spacer(),
+          _Akun(state: s, compact: compact),
+          const SizedBox(height: 14),
+        ],
       );
 }
 

@@ -31,7 +31,7 @@ class AppHeader extends StatelessWidget {
         color: Color(0xE60A0A0C),
         border: Border(bottom: BorderSide(color: Color(0xFF1E1E21), width: 1)),
       ),
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
       child: Row(
         children: [
           Expanded(

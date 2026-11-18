@@ -7,6 +7,10 @@ mobile untuk siswa/pengelola lab, dan panel admin berbasis web.
 
 Proyek portofolio — backend Supabase (PostgreSQL) plan Free, seluruh biaya Rp 0.
 
+**Demo langsung:** panel admin https://dancing-arithmetic-238ac5.netlify.app
+(login diperlukan; akun demo tersedia atas permintaan). APK mobile debug
+terpasang di perangkat uji (Redmi 9).
+
 ## Fitur
 
 **Mobile (siswa / pengelola lab)**
@@ -21,7 +25,8 @@ Proyek portofolio — backend Supabase (PostgreSQL) plan Free, seluruh biaya Rp 
 **Panel admin (Flutter Web)**
 - Antrean: periksa → setujui → tolak, dengan pemulihan status aset saat reject.
 - Aset: koreksi deskriptif PC/barang, ubah status, penyesuaian stok beralasan.
-- Riwayat: selesaikan pekerjaan (delta stok tercatat), buka lagi tiket.
+- Riwayat: CRUD pemeliharaan mandiri di luar pengajuan (catat/ubah/hapus),
+  selesaikan pekerjaan (delta stok tercatat), buka lagi tiket.
 - Broadcast, pengguna (peran & keaktifan), dashboard KPI.
 
 ## Arsitektur
@@ -110,9 +115,12 @@ flutter build apk --release --split-per-abi \
   --dart-define=SUPABASE_URL=<url> --dart-define=SUPABASE_PUBLISHABLE_KEY=<key>
 ```
 
-Panel admin adalah file statis setelah build: host di Netlify Drop / Cloudflare
-Pages / GitHub Pages (gratis, HTTPS). Tidak ada rahasia di bundle web — hanya
-publishable key; penegakan peran tetap di server.
+Panel admin adalah file statis setelah build (`node run.js build-admin` →
+`build/web`). Deploy pertama lewat **Netlify Drop** (seret folder `build/web`
+ke app.netlify.com/drop). Situs baru di tim Netlify baru default-nya Private —
+ubah **Project configuration → General → Visitor access → Project visibility**
+ke **Public** agar bisa diakses tanpa login Netlify. Tidak ada rahasia di
+bundle web — hanya publishable key; penegakan peran tetap di server.
 
 ## Catatan operasional
 

@@ -33,31 +33,45 @@ class AdminPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      tx(title, 22, w: FontWeight.w700),
-                      const SizedBox(height: 4),
-                      tx(subtitle, 12, c: Colors.white54),
-                    ],
-                  ),
+  Widget build(BuildContext context) {
+    final sempit = MediaQuery.sizeOf(context).width < 700;
+    final judul = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        tx(title, sempit ? 19 : 22, w: FontWeight.w700),
+        const SizedBox(height: 4),
+        tx(subtitle, 12, c: Colors.white54),
+      ],
+    );
+    final aksi = Wrap(spacing: 8, runSpacing: 8, children: actions);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: sempit
+              ? const EdgeInsets.fromLTRB(16, 16, 16, 4)
+              : const EdgeInsets.fromLTRB(24, 20, 24, 4),
+          child: sempit
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [judul, if (actions.isNotEmpty) ...[const SizedBox(height: 12), aksi]],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [Expanded(child: judul), aksi],
                 ),
-                Wrap(spacing: 8, runSpacing: 8, children: actions),
-              ],
-            ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: sempit
+                ? const EdgeInsets.fromLTRB(16, 8, 16, 16)
+                : const EdgeInsets.fromLTRB(24, 8, 24, 24),
+            child: child,
           ),
-          Expanded(child: Padding(padding: const EdgeInsets.fromLTRB(24, 8, 24, 24), child: child)),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }
 
 class KpiCard extends StatelessWidget {
@@ -78,10 +92,13 @@ class KpiCard extends StatelessWidget {
 
   // Lebar tetap: KpiCard hidup di dalam Wrap yang memberi constraint lebar
   // tak terbatas; tanpa batas ini Row ber-Expanded di dalamnya gagal layout.
+  // Di HP kartu melebar penuh (padding AdminPage 16 kiri-kanan).
   @override
-  Widget build(BuildContext context) => SizedBox(
-        width: 216,
-        child: Container(
+  Widget build(BuildContext context) {
+    final w = MediaQuery.sizeOf(context).width;
+    return SizedBox(
+      width: w < 700 ? w - 32 : 216,
+      child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: card,
@@ -107,7 +124,8 @@ class KpiCard extends StatelessWidget {
             ],
           ),
         ),
-      );
+    );
+  }
 }
 
 enum AdminTone { primary, ghost, warn, danger }
@@ -193,54 +211,117 @@ class AdminTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final align = numericRight ? Alignment.centerRight : Alignment.centerLeft;
-    return Container(
-      decoration: BoxDecoration(
-        color: card,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: cardBorder),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                for (var j = 0; j < headers.length; j++) ...[
-                  if (j > 0) const SizedBox(width: 12),
-                  Expanded(
-                    child: Align(
-                      alignment: align,
-                      child: tx(headers[j], 12.5, w: FontWeight.w700, c: Colors.white),
-                    ),
+    return LayoutBuilder(
+      builder: (context, c) {
+        // Layar sempit (HP): tabel jadi daftar kartu berlabel — kolom tidak
+        // berdesakan. Desktop tetap tabel asli di bawah.
+        if (c.maxWidth < 700) return _cards();
+        return Container(
+          decoration: BoxDecoration(
+            color: card,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: cardBorder),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    for (var j = 0; j < headers.length; j++) ...[
+                      if (j > 0) const SizedBox(width: 12),
+                      Expanded(
+                        child: Align(
+                          alignment: align,
+                          child: tx(headers[j], 12.5, w: FontWeight.w700, c: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Container(height: 1, color: a(Colors.white, 0.07)),
+              for (int i = 0; i < rows.length; i++) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      for (var j = 0; j < rows[i].length; j++) ...[
+                        if (j > 0) const SizedBox(width: 12),
+                        Expanded(
+                          child: Align(alignment: align, child: rows[i][j]),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
+                ),
+                if (i != rows.length - 1) Container(height: 1, color: a(Colors.white, 0.05)),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Mode HP: satu kartu per baris. Kolom pertama jadi judul kartu, kolom
+  /// "Aksi" pindah ke kanan atas, sisanya pasangan label–nilai vertikal.
+  Widget _cards() {
+    final aksi = headers.indexOf('Aksi');
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (int i = 0; i < rows.length; i++) ...[
+          if (i > 0) const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+            decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: cardBorder),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: rows[i].isNotEmpty
+                          ? rows[i][0]
+                          : const SizedBox.shrink(),
+                    ),
+                    if (aksi > 0 && aksi < rows[i].length) rows[i][aksi],
+                  ],
+                ),
+                for (int j = 1; j < rows[i].length && j < headers.length; j++)
+                  if (j != aksi)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, right: 6),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: 86,
+                            child: tx(headers[j], 11, c: Colors.white38, w: FontWeight.w600),
+                          ),
+                          Expanded(
+                            child: Align(alignment: Alignment.centerLeft, child: rows[i][j]),
+                          ),
+                        ],
+                      ),
+                    ),
               ],
             ),
           ),
-          Container(height: 1, color: a(Colors.white, 0.07)),
-          for (int i = 0; i < rows.length; i++) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  for (var j = 0; j < rows[i].length; j++) ...[
-                    if (j > 0) const SizedBox(width: 12),
-                    Expanded(
-                      child: Align(alignment: align, child: rows[i][j]),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            if (i != rows.length - 1) Container(height: 1, color: a(Colors.white, 0.05)),
-          ],
         ],
-      ),
+      ],
     );
   }
 
@@ -385,6 +466,7 @@ Future<bool> confirmDialog(
     context: context,
     builder: (ctx) => Dialog(
       backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 420),
         child: Container(

@@ -9,6 +9,7 @@ library;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -29,6 +30,10 @@ import 'widgets/app_header.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Pembuka (onboarding + login) terkunci potret; isi aplikasi membuka semua
+  // orientasi lewat Shell.initState dan mengunci lagi saat logout (dispose).
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   try {
     await bootstrapSibalApp();
@@ -177,6 +182,24 @@ class Shell extends StatefulWidget {
 class _ShellState extends State<Shell> {
   int _activeTab = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    // Isi aplikasi bebas potret/landscape.
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Kembali ke login (logout/sesi habis): kunci potret lagi.
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    super.dispose();
+  }
+
   static const _labels = ['Beranda', 'Unit PC', 'Inventaris', 'Pengajuan', 'Akun'];
   static const _icons = [
     Icons.dashboard_rounded,
@@ -201,13 +224,18 @@ class _ShellState extends State<Shell> {
     return Scaffold(
       extendBody: true,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(62),
-        child: AnimatedBuilder(
-          animation: AppState.instance,
-          builder: (context, _) => AppHeader(
-            subtitle: _labels[_activeTab],
-            s: AppState.instance,
-            onAvatarTap: () => setState(() => _activeTab = 4),
+        // Tinggi header + inset status bar bawaan HP, supaya brand tidak
+        // tertutup jam/baterai/notifikasi.
+        preferredSize: Size.fromHeight(62 + MediaQuery.of(context).padding.top),
+        child: SafeArea(
+          bottom: false,
+          child: AnimatedBuilder(
+            animation: AppState.instance,
+            builder: (context, _) => AppHeader(
+              subtitle: _labels[_activeTab],
+              s: AppState.instance,
+              onAvatarTap: () => setState(() => _activeTab = 4),
+            ),
           ),
         ),
       ),
