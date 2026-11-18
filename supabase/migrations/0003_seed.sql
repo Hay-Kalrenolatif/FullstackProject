@@ -35,7 +35,7 @@ insert into public.pcs (id, lab_id, codename, processor, ram, storage, gpu, mous
   ('00000000-0000-0000-0000-0000000001a4',
    (select id from public.labs where code = 'LAB1'), 'PC-04',
    'Intel Core i3-10100', '8 GB DDR4', '256 GB SSD', 'Terintegrasi',
-   'Standard USB', 'Standard USB', 'rusak', 'Baris tengah kiri',
+   'Logitech M100', 'Standard USB', 'rusak', 'Baris tengah kiri',
    'Power supply drop, mati saat render')
 on conflict (id) do nothing;
 

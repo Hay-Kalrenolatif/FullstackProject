@@ -1,0 +1,161 @@
+<mxfile host="app.diagrams.net" agent="Qoder">
+  <diagram id="sibal-class" name="SIBAL Class Diagram">
+    <mxGraphModel dx="1241" dy="718" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1950" pageHeight="1660" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="c1" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;lib/pages/*&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;5 dock tab, mobile&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;summary_page&lt;br&gt;pc_management_page&lt;br&gt;support_inventory_page&lt;br&gt;my_reports_page&lt;br&gt;profile_page&lt;br&gt;login_page&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;widgets: report_sheet · berita_acara · app_header&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="164" width="260" x="140" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;b&gt;lib/admin/*&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;6 tab, web build&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;dashboard_page&lt;br&gt;queue_page&lt;br&gt;assets_page&lt;br&gt;history_page&lt;br&gt;broadcast_page&lt;br&gt;users_page&lt;br&gt;admin_login&lt;br&gt;admin_shell&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;widgets/admin_ui : AdminTable · adminFormDialog · AdminForm&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="164" width="340" x="1180" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;b&gt;AppState&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;ChangeNotifier&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+profile, labs, pcs, items, jobs&lt;br&gt;+myReports, announcements, stats&lt;br&gt;+state : LoadState&lt;br&gt;+labFilter : String?&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+refresh() / refreshAssets()&lt;br&gt;+refreshMyReports()&lt;br&gt;+submitReport(...) : ReportIssueResult&lt;br&gt;+cancelMyReport(id)&lt;br&gt;+start / signIn / signOut&lt;br&gt;+pcReadyRatio : double {get}&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="190" width="220" x="160" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;b&gt;AdminState&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;ChangeNotifier, TANPA Hive&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+me : Profile?&lt;br&gt;+queue, recent : List&lt;Report&gt;&lt;br&gt;+pcs, items, jobs, profiles&lt;br&gt;+announcements, stats&lt;br&gt;+state : AdminLoadState&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+attach(p) / detach() / refresh()&lt;br&gt;+check / approve / reject / reopen&lt;br&gt;+complete(jobId, outcome, qtyDelta)&lt;br&gt;+setAssetStatus / savePc / saveItem&lt;br&gt;+saveAnnouncement / deleteAnnouncement&lt;br&gt;+setRole / setActive&lt;br&gt;+statusUntukPerubahan(...) {static}&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200" width="340" x="1180" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=left;fontSize=13;fontStyle=1;fillColor=none;strokeColor=#666666;dashed=1;spacing=10;" value="lib/services/*   +   lib/core/" vertex="1">
+          <mxGeometry height="380" width="1560" x="110" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="f6" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=left;fontSize=13;fontStyle=1;fillColor=none;strokeColor=#666666;dashed=1;spacing=10;" value="supabase PostgreSQL" vertex="1">
+          <mxGeometry height="380" width="150" x="1690" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="c7" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;AppEnv&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+url {static}&lt;br&gt;+publishableKey {static}&lt;br&gt;+emailDomain = &#39;@sibal.my.id&#39;&lt;br&gt;+usernameShape {static}&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+emailForUsername(u)&lt;br&gt;+normalizeUsername(s)&lt;br&gt;+ensureConfigured()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="240" x="140" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="c8" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;AuthService&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;singleton&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+session : Session?&lt;br&gt;+userId : String?&lt;br&gt;+isSignedIn : bool&lt;br&gt;+onAuthStateChange&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+signIn(username, password)&lt;br&gt;+signUp(u, nama, pw)&lt;br&gt;+requireProfile(id)&lt;br&gt;+updateOwnProfile(...)&lt;br&gt;+signOut()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="164" width="270" x="413" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="c9" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;LocalCache&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;Hive CE, baca-saja&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+lastSyncedAt : DateTime?&lt;br&gt;_boxes : Map&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+init()&lt;br&gt;+replaceAll(kind, rows)&lt;br&gt;+read(kind)&lt;br&gt;+markSynced()&lt;br&gt;+clearAll()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="250" x="690" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="c10" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;ConnectivityService&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;singleton&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+online : ValueNotifier&lt;bool&gt;&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+start()&lt;br&gt;+dispose()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="104" width="136" x="1010" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="c11" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;SupabaseRepository&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;satu-satunya ke cloud&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;instance {static}&lt;br&gt;_c : SupabaseClient {get}&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;labs / pcs / supportingItems&lt;br&gt;myReports / openReports / allReports&lt;br&gt;job / recentJobs / openJobs&lt;br&gt;announcements / labStats / profile(s)&lt;br&gt;reportIssue / cancelReport&lt;br&gt;checkReport / approveReport / rejectReport&lt;br&gt;completeMaintenance / reopenReport&lt;br&gt;setAssetStatus / setUserRole / setActive&lt;br&gt;updatePc / updateSupportItem&lt;br&gt;upsertAnnouncement / deleteAnnouncement&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="232" width="240" x="1240" y="509" as="geometry" />
+        </mxCell>
+        <mxCell id="c12" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;CacheKind&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;enumeration&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;labs · pcs · support&lt;br&gt;jobs · announcements&lt;br&gt;stats&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="92" width="190" x="720" y="718" as="geometry" />
+        </mxCell>
+        <mxCell id="c13" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#f5f5f5;strokeColor=#666666;" value="&lt;b&gt;sibal_* function&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;security definer&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;report_issue&lt;br&gt;check / approve&lt;br&gt;reject / reopen&lt;br&gt;cancel_report&lt;br&gt;complete_maintenance&lt;br&gt;set_asset_status&lt;br&gt;set_user_role/active&lt;br&gt;update_pc / update_item&lt;br&gt;upsert / delete_announcement&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;app.resolve_admin()&lt;br&gt;app.text_field()&lt;br&gt;app.email_for_username()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200" width="130" x="1700" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="f14" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=left;fontSize=13;fontStyle=1;fillColor=none;strokeColor=#666666;dashed=1;spacing=10;" value="lib/models/*" vertex="1">
+          <mxGeometry height="520" width="1560" x="110" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="c15" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;Lab&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, code, name&lt;br&gt;+description?&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+rows(rs) {static}&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="104" width="150" x="135" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c16" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;PcAsset&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, labId, codename&lt;br&gt;+processor, ram&lt;br&gt;+storage, gpu?&lt;br&gt;+mouse/keyboard?&lt;br&gt;+status : AssetStatus&lt;br&gt;+location, notes?&lt;br&gt;+isActive : bool&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+specLine {get}&lt;br&gt;+fromRow(r) {static}&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="176" width="175" x="301" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c17" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;SupportAsset&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, labId, name&lt;br&gt;+category&lt;br&gt;+qty : int, unit&lt;br&gt;+status : AssetStatus&lt;br&gt;+spec? location? notes?&lt;br&gt;+isActive : bool&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+qtyLabel {get}&lt;br&gt;+habis {get}&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="164" width="175" x="492" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c18" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;Report&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, userId?, labId&lt;br&gt;+pcId? / itemId?&lt;br&gt;+targetKind&lt;br&gt;+prevAssetStatus&lt;br&gt;+issue, severity&lt;br&gt;+evidencePaths&lt;br&gt;+status : ReportStatus&lt;br&gt;+reviewedBy?, notes?&lt;br&gt;+witnessCount?&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+assetId {get}&lt;br&gt;+targetLabel {get}&lt;br&gt;+bisaDibatalkanBy {get}&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="212" width="190" x="683" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c19" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;MaintenanceJob&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, reportId?, labId&lt;br&gt;+pcId? / itemId?&lt;br&gt;+targetKind&lt;br&gt;+category&lt;br&gt;+status : MaintenanceStatus&lt;br&gt;+actionTaken&lt;br&gt;+performedByName&lt;br&gt;+maintenanceDate&lt;br&gt;+qtyDelta : int&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+stokBergerak {get}&lt;br&gt;+assetLabel {get}&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="200" width="185" x="889" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c20" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;Profile&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, username&lt;br&gt;+fullName&lt;br&gt;+description&lt;br&gt;+avatarPath?&lt;br&gt;+role : AppRole&lt;br&gt;+isActive&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+isAdmin {get}&lt;br&gt;+initials {get}&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="164" width="160" x="1090" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c21" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;Announcement&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+id, title, body&lt;br&gt;+level&lt;br&gt;+isPublished&lt;br&gt;+publishedAt? expiresAt?&lt;br&gt;+createdBy?&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+masihTayang([now])&lt;br&gt;+toJson()&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="140" width="175" x="1266" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c22" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b&gt;LabStats&lt;/b&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+labId, code, name&lt;br&gt;+totalPc, pcBaik&lt;br&gt;+pcButuhPerhatian&lt;br&gt;+supportQty, supportBaik&lt;br&gt;+pendingReports&lt;br&gt;+pekerjaanBerjalan&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+pcReadyRatio {get}&lt;br&gt;+fromRow(r) {static}&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="152" width="170" x="1457" y="955" as="geometry" />
+        </mxCell>
+        <mxCell id="c23" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;AssetStatus&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;enumeration&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;baik · dalamPengajuan&lt;br&gt;diperiksa · rusak&lt;br&gt;habis · purnatugas&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+wire, label&lt;br&gt;+butuhPerhatian {get}&lt;br&gt;+bolehUntukApprove {get}&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="128" width="230" x="380" y="1230" as="geometry" />
+        </mxCell>
+        <mxCell id="c24" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;ReportStatus&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;enumeration&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;menunggu · diperiksa&lt;br&gt;diproses · selesai&lt;br&gt;ditolak · batal&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+wire, label&lt;br&gt;+terbuka {get}&lt;br&gt;+bisaDibatalkanPemilik {get}&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="128" width="190" x="687" y="1230" as="geometry" />
+        </mxCell>
+        <mxCell id="c25" parent="1" style="shape=rect;html=1;whiteSpace=wrap;verticalAlign=top;align=center;fontSize=11;spacing=4;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;MaintenanceStatus&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;font-style:italic&quot;&gt;&amp;#171;enumeration&amp;#187;&lt;/font&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;tertunda · berjalan&lt;br&gt;selesai · dibatalkan&lt;br&gt;&lt;/div&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;div style=&quot;text-align:left&quot;&gt;+terbuka {get}&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="92" width="200" x="930" y="1230" as="geometry" />
+        </mxCell>
+        <mxCell id="n26" parent="1" style="shape=note;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;fillColor=#fffbe6;strokeColor=#d6b656;spacing=8;" value="&lt;b&gt;Baris domain&lt;/b&gt;&lt;br&gt;PcAsset, SupportAsset, Report, MaintenanceJob dan LabStats semuanya punya &lt;i&gt;labId&lt;/i&gt; yang menunjuk Lab; Report menyimpan &lt;i&gt;prevAssetStatus&lt;/i&gt; bertipe AssetStatus. Sengaja tidak digambar sebagai garis supaya tidak ada garis yang melintasi kotak." vertex="1">
+          <mxGeometry height="128" width="250" x="1160" y="1230" as="geometry" />
+        </mxCell>
+        <mxCell id="m27" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="18" width="46" x="239" y="921" as="geometry" />
+        </mxCell>
+        <mxCell id="m28" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;" value="0..*" vertex="1">
+          <mxGeometry height="18" width="46" x="303" y="921" as="geometry" />
+        </mxCell>
+        <mxCell id="m29" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;" value="1" vertex="1">
+          <mxGeometry height="18" width="46" x="827" y="921" as="geometry" />
+        </mxCell>
+        <mxCell id="m30" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=1;" value="0..1" vertex="1">
+          <mxGeometry height="18" width="46" x="891" y="921" as="geometry" />
+        </mxCell>
+        <mxCell id="n31" parent="1" style="shape=note;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;fillColor=#fffbe6;strokeColor=#d6b656;spacing=8;" value="&lt;b&gt;Legenda simbol&lt;/b&gt;&lt;br&gt;• kotak 3 kompartemen = kelas UML (nama / atribut / metode)&lt;br&gt;• bingkai putus-putus = paket; garis yang menuju bingkai berarti &quot;salah satu anggotanya&quot;&lt;br&gt;• diamond kosong = agregasi · garis putus + panah terbuka = dependensi&lt;br&gt;• kotak abu-abu putus-putus = function PostgreSQL security definer, bukan Dart&lt;br&gt;• angka 1 / 0..* = multiplicity, ditulis mengambang di atas kotak&lt;br&gt;• dua koridor kosong di tepi halaman = jalur garis panjang, jadi tidak ada garis yang memotong bingkai" vertex="1">
+          <mxGeometry height="200" width="470" x="110" y="1450" as="geometry" />
+        </mxCell>
+        <mxCell id="n32" parent="1" style="shape=note;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=11;fillColor=#fffbe6;strokeColor=#d6b656;spacing=8;" value="&lt;b&gt;Dua hukum yang wajib terlihat&lt;/b&gt;&lt;br&gt;1. Hanya SupabaseRepository menyentuh cloud: baca lewat PostgREST (SELECT saja), tulis lewat RPC. Tidak ada PcRepository.createPC() maupun manageUser() di klien.&lt;br&gt;2. AppState boleh jatuh ke cache Hive saat offline; AdminState sengaja tanpa LocalCache — panel yang menampilkan data basi akan menyetujui tiket di atas kenyataan yang salah." vertex="1">
+          <mxGeometry height="200" width="470" x="610" y="1450" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" edge="1" parent="1" source="c1" style="html=1;endArrow=none;startArrow=none;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="c3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="c2" style="html=1;endArrow=none;startArrow=none;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="c4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="c3" style="html=1;endArrow=none;startArrow=diamondThin;startFill=0;startSize=16;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.15;entryY=0;" target="f5" value="memakai + memiliki cache &amp; koneksi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="c4" style="html=1;endArrow=none;startArrow=none;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.8;entryY=0;" target="f5" value="memakai repository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="c3" style="html=1;endArrow=none;startArrow=diamondThin;startFill=0;startSize=16;strokeColor=#666666;exitX=0;exitY=0.5;entryX=0;entryY=0.35;" target="f14" value="memiliki daftar domain">
+          <mxGeometry relative="1" x="0.0208" as="geometry">
+            <Array as="points">
+              <mxPoint x="55" y="338" />
+              <mxPoint x="55" y="1082" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="c4" style="html=1;endArrow=none;startArrow=diamondThin;startFill=0;startSize=16;strokeColor=#666666;exitX=1;exitY=0.5;entryX=1;entryY=0.62;" target="f14" value="memiliki daftar domain">
+          <mxGeometry relative="1" x="0.0063" as="geometry">
+            <Array as="points">
+              <mxPoint x="1900" y="350" />
+              <mxPoint x="1900" y="1222.4" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="c7" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="c8" value="emailForUsername">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="c9" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="c12" value="kunci box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="c11" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="c13" value="RPC">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="c15" style="html=1;endArrow=none;startArrow=none;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="c16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="c18" style="html=1;endArrow=none;startArrow=none;strokeColor=#666666;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="c19" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="c16" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.2;entryY=0;" target="c23" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="c17" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.75;entryY=0;" target="c23" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="c18" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="c24" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="c19" style="html=1;endArrow=open;dashed=1;strokeColor=#666666;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="c25" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,9 +1,37 @@
+/// Inventaris barang pendukung.
+///
+/// Stepper jumlah dari prototipe **sengaja hilang**. Satu klik yang langsung
+/// mengubah `qty` di perangkat lokal adalah sebab utama stok lab tidak pernah
+/// cocok dengan kenyataan; jumlah sekarang hanya bergerak lewat admin, dan
+/// setiap geraknya meninggalkan baris riwayat (0006 §3). Halaman ini baca-saja
+/// terhadap stok; satu-satunya tindakan pengguna adalah mengajukan kerusakan.
+library;
+
 import 'package:flutter/material.dart';
-import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+
+import '../models/asset_enums.dart';
+import '../models/assets.dart';
+import '../models/tickets.dart';
+import '../state/app_state.dart';
 import '../theme.dart';
-import '../models/support_item.dart';
-import '../services/hive_database_service.dart';
 import '../widgets/common.dart';
+import '../widgets/mock_ui.dart';
+import '../widgets/report_sheet.dart';
+import '../widgets/status_chip.dart';
+import '../widgets/sync_banner.dart';
+import '../widgets/state_scope.dart';
+
+/// Pemetaan kategori barang ke ikon. Sumber nyata `support_category`, bukan
+/// nama mockup.
+IconData supportCategoryIcon(SupportCategory c) => switch (c) {
+      SupportCategory.jaringan => Icons.hub_outlined,
+      SupportCategory.tampilan => Icons.videocam_outlined,
+      SupportCategory.daya => Icons.power_outlined,
+      SupportCategory.periferal => Icons.keyboard_alt_outlined,
+      SupportCategory.alat => Icons.handyman_outlined,
+      SupportCategory.konsumsi => Icons.inventory_2_outlined,
+      SupportCategory.lain => Icons.widgets_outlined,
+    };
 
 class SupportInventoryPage extends StatefulWidget {
   const SupportInventoryPage({super.key});
@@ -13,392 +41,533 @@ class SupportInventoryPage extends StatefulWidget {
 }
 
 class _SupportInventoryPageState extends State<SupportInventoryPage> {
-  int filterIndex = 0; // 0 = Semua, 1 = Baik, 2 = Rusak / Perlu Cek
+  final _search = TextEditingController();
+  int _statusFilter = 0; // 0 semua, 1 siap pakai, 2 perlu tindakan
 
-  void _showSupportForm(BuildContext context, [SupportItem? existing]) {
-    final isEdit = existing != null;
-    final nameCtrl = TextEditingController(text: existing?.name ?? '');
-    final qtyCtrl = TextEditingController(text: existing != null ? existing.qty.toString() : '1');
-    final locCtrl = TextEditingController(text: existing?.location ?? '');
-    String condition = existing?.condition ?? 'Baik';
-
-    void addQty(int delta) {
-      final cur = int.tryParse(qtyCtrl.text) ?? 0;
-      qtyCtrl.text = (cur + delta).clamp(1, 9999).toString();
-    }
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSheetState) => Padding(
-          padding: EdgeInsets.fromLTRB(
-            22,
-            20,
-            22,
-            24 + MediaQuery.of(ctx).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  const Icon(Icons.devices_other_rounded, color: yel, size: 22),
-                  const SizedBox(width: 10),
-                  tx(isEdit ? 'Edit Alat Pendukung' : 'Tambah Inventaris Pendukung', 18, w: FontWeight.w700),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: nameCtrl,
-                decoration: dec('Nama Barang Non-PC (contoh: Switch Hub 24-Port)', prefix: const Icon(Icons.inventory_2_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 8),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    for (final preset in ['Switch Hub 24-Port', 'Proyektor HDMI', 'UPS 1200VA', 'Kabel LAN Cat6 50M', 'Crimping Tool'])
-                      Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: ActionChip(
-                          label: tx(preset, 11, c: yel, w: FontWeight.w600),
-                          backgroundColor: a(yel, 0.1),
-                          side: BorderSide(color: a(yel, 0.2)),
-                          padding: EdgeInsets.zero,
-                          onPressed: () => setSheetState(() => nameCtrl.text = preset),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: qtyCtrl,
-                keyboardType: TextInputType.number,
-                decoration: dec('Jumlah Barang (Unit)', prefix: const Icon(Icons.numbers_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (final val in [1, 5, 10])
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: ActionChip(
-                        label: tx('+$val', 11, c: const Color.fromARGB(255, 168, 230, 216), w: FontWeight.w600),
-                        backgroundColor: a(mint, 0.1),
-                        side: BorderSide(color: a(mint, 0.2)),
-                        padding: EdgeInsets.zero,
-                        onPressed: () => setSheetState(() => addQty(val)),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              tx('Kondisi Barang', 12, c: Colors.white60),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (final cond in ['Baik', 'Perlu Cek', 'Rusak']) ...[
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () => setSheetState(() => condition = cond),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 9),
-                          decoration: BoxDecoration(
-                            color: condition == cond
-                                ? a(cond == 'Baik' ? mint : (cond == 'Perlu Cek' ? yel : org), 0.15)
-                                : cardSurface,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: condition == cond
-                                  ? (cond == 'Baik' ? mint : (cond == 'Perlu Cek' ? yel : org))
-                                  : Colors.white12,
-                            ),
-                          ),
-                          child: Center(
-                            child: tx(
-                              cond,
-                              12,
-                              c: condition == cond
-                                  ? (cond == 'Baik' ? mint : (cond == 'Perlu Cek' ? yel : org))
-                                  : Colors.white70,
-                              w: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (cond != 'Rusak') const SizedBox(width: 8),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: locCtrl,
-                decoration: dec('Lokasi / Tempat Simpan (opsional)', prefix: const Icon(Icons.place_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                child: btn(isEdit ? 'Perbarui Barang' : 'Simpan', () {
-                  final name = nameCtrl.text.trim();
-                  final q = int.tryParse(qtyCtrl.text) ?? 1;
-
-                  if (name.isEmpty) {
-                    snack(context, 'Masukkan nama barang terlebih dahulu', isError: true);
-                    return;
-                  }
-
-                  final item = SupportItem(
-                    id: existing?.id ?? 'sup_${DateTime.now().millisecondsSinceEpoch}',
-                    name: name,
-                    qty: q,
-                    condition: condition,
-                    location: locCtrl.text.trim().isEmpty ? null : locCtrl.text.trim(),
-                    updatedAt: DateTime.now(),
-                  );
-
-                  HiveDatabaseService.instance.saveSupportItem(item);
-                  Navigator.pop(ctx);
-                  snack(context, '$name ($q unit) disimpan ke support_box');
-                }, icon: Icons.save_rounded),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
   }
 
-  void _confirmDelete(BuildContext context, SupportItem item) {
-    showDialog(
+  Future<void> _lapor(AppState s, SupportAsset item) async {
+    final res = await openReportSheet(
+      context,
+      assetLabel: '${item.name} · ${item.category.label}',
+      itemId: item.id,
+      currentStatus: item.status,
+    );
+    if (!mounted || res == null) return;
+    snack(context, res.message, isError: !res.sent);
+  }
+
+  /// Buka sheet pilih barang, lalu lempar ke sheet laporan untuk pilihan itu.
+  Future<void> _laporDariHeader(AppState s) async {
+    final items = s.visibleItems;
+    if (items.isEmpty) return;
+    final chosen = await showModalBottomSheet<SupportAsset>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ItemPickerSheet(items: items),
+    );
+    if (chosen == null || !mounted) return;
+    await _lapor(s, chosen);
+  }
+
+  Future<void> _batalkan(AppState s, Report r) async {
+    final yes = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: card,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: tx('Hapus Alat Pendukung?', 18, w: FontWeight.w700),
+        title: tx('Batalkan pengajuan?', 16, w: FontWeight.w700),
         content: tx(
-          'Barang "${item.name}" sebanyak ${item.qty} unit akan dihapus dari support_box.',
-          14,
+          'Status barang kembali ke ${r.prevAssetStatus.label}. Hanya bisa selama '
+          'admin belum memprosesnya.',
+          12.5,
           c: Colors.white70,
         ),
         actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: tx('Batal', 13, c: secText)),
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: tx('Batal', 14, c: Colors.white60),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: org),
-            onPressed: () {
-              HiveDatabaseService.instance.deleteSupportItem(item.id);
-              Navigator.pop(ctx);
-              snack(context, '${item.name} dihapus dari inventaris');
-            },
-            child: tx('Hapus', 14, c: bg, w: FontWeight.w700),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: tx('Ya, batalkan', 13, c: org, w: FontWeight.w700),
           ),
         ],
       ),
     );
+    if (yes != true || !mounted) return;
+    try {
+      await s.cancelMyReport(r.id);
+      if (mounted) snack(context, 'Pengajuan dibatalkan dan status barang dipulihkan.');
+    } catch (e) {
+      if (mounted) snack(context, '$e', isError: true);
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final db = HiveDatabaseService.instance;
+  Widget build(BuildContext context) => stateScope(builder: (context, s) {
+        final q = _search.text.trim().toLowerCase();
+        var all = s.visibleItems;
+        if (_statusFilter == 1) {
+          all = all.where((e) => e.status == AssetStatus.baik).toList();
+        } else if (_statusFilter == 2) {
+          all = all.where((e) => e.status.butuhPerhatian || e.habis).toList();
+        }
+        final shown = q.isEmpty
+            ? all
+            : all
+                .where((e) =>
+                    e.name.toLowerCase().contains(q) ||
+                    e.category.label.toLowerCase().contains(q) ||
+                    (e.location ?? '').toLowerCase().contains(q) ||
+                    (e.specifications ?? '').toLowerCase().contains(q))
+                .toList();
 
-    return ValueListenableBuilder(
-      valueListenable: db.supportBox.listenable(),
-      builder: (context, box, _) {
-        final allItems = db.getAllSupportItems();
-        final filtered = allItems.where((item) {
-          if (filterIndex == 1) return item.isGood;
-          if (filterIndex == 2) return !item.isGood;
-          return true;
-        }).toList();
+        final groups = <String, List<SupportAsset>>{};
+        for (final e in shown) {
+          groups.putIfAbsent(e.labId, () => []).add(e);
+        }
+        for (final g in groups.values) {
+          g.sort((a, b) => a.name.compareTo(b.name));
+        }
+        final byLab = <String, Lab>{for (final l in s.labs) l.id: l};
 
-        final totalQty = allItems.fold<int>(0, (s, i) => s + i.qty);
-        final goodQty = allItems.where((i) => i.isGood).fold<int>(0, (s, i) => s + i.qty);
+        final totalQty = s.visibleItems.fold<int>(0, (a, e) => a + e.qty);
+        final siap = s.visibleItems.where((e) => e.status == AssetStatus.baik).length;
+        final perlu = s.visibleItems.where((e) => e.status.butuhPerhatian || e.habis).length;
+
+        final itemCounts = <String, int>{};
+        for (final i in s.items) {
+          itemCounts[i.labId] = (itemCounts[i.labId] ?? 0) + 1;
+        }
+
+        final openByItem = <String, Report>{};
+        for (final r in s.myReports) {
+          if (r.status.terbuka && r.supportingItemId != null) {
+            openByItem[r.supportingItemId!] = r;
+          }
+        }
 
         return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 110),
+          padding: const EdgeInsets.fromLTRB(20, 2, 20, 110),
           physics: const BouncingScrollPhysics(),
           children: [
-            tx('Inventaris Pendukung Lab', 22, w: FontWeight.w700, al: TextAlign.center),
-
-            // Filter Tabs
-            Seg(
-              const ['Semua', 'Kondisi Baik', 'Cek/Rusak'],
-              filterIndex,
-              (v) => setState(() => filterIndex = v),
-            ),
-
-            // Total Counter
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: card,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: cardBorder),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: a(yel, 0.12),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.devices_other_rounded, color: yel, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        tx('Total Inventaris Pendukung', 11, c: Colors.white54),
-                        const SizedBox(height: 2),
-                        tx('$totalQty Unit Terdata ($goodQty Kondisi Baik)', 15, w: FontWeight.w700, c: Colors.white),
-                      ],
-                    ),
-                  ),
-                  btn('Tambah', () => _showSupportForm(context), tonal: true, icon: Icons.add_rounded),
-                ],
-              ),
-            ),
-            const SizedBox(height: 14),
+            SyncBanner(s),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                tx('Daftar Perangkat (${filtered.length})', 15, w: FontWeight.w600),
+                Expanded(child: tx('PILIH RUANG LABORATORIUM', 10.5, c: secText, w: FontWeight.w700)),
+                Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: s.online ? statusMint : org),
+                    ),
+                    const SizedBox(width: 6),
+                    tx(s.online ? 'Node Aktif' : 'Node Offline', 10.5, c: secText),
+                  ],
+                ),
               ],
             ),
             const SizedBox(height: 8),
-
-            for (final item in filtered) _buildSupportCard(context, item),
-
-            if (filtered.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  children: [
-                    const Icon(Icons.inventory_2_outlined, size: 40, color: Colors.white24),
-                    const SizedBox(height: 10),
-                    tx('Belum ada alat pendukung pada filter ini', 13, c: Colors.white38, al: TextAlign.center),
-                    const SizedBox(height: 12),
-                    btn('+ Tambah Alat Pendukung', () => _showSupportForm(context), tonal: true),
-                  ],
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildSupportCard(BuildContext context, SupportItem item) {
-    final col = item.isGood ? mint : (item.condition == 'Perlu Cek' ? yel : org);
-
-    return Panel(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  color: a(col, 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: a(col, 0.25)),
-                ),
-                child: Center(
-                  child: tx('${item.qty}', 14, w: FontWeight.w700, c: col),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    tx(item.name, 15, w: FontWeight.w700),
-                    const SizedBox(height: 2),
-                    tx(
-                      item.location != null ? 'Lokasi: ${item.location}' : 'Diperbarui ${fd(item.updatedAt)}',
-                      11,
-                      c: Colors.white54,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: a(col, 0.14),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: tx(item.condition, 11, c: col, w: FontWeight.w700),
-              ),
-              const SizedBox(width: 4),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined, size: 18, color: Colors.white38),
-                onPressed: () => _showSupportForm(context, item),
-                tooltip: 'Edit item',
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Colors.white38),
-                onPressed: () => _confirmDelete(context, item),
-                tooltip: 'Hapus item',
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          // Quick Quantity
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: cardSurface,
-              borderRadius: BorderRadius.circular(14),
+            LabPicker(
+              labs: s.labsWithData,
+              selectedId: s.labFilter,
+              counts: itemCounts,
+              onSelect: (id) => s.setLabFilter(id),
             ),
-            child: Row(
+            const SizedBox(height: 18),
+
+            Panel(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  tx('Inventaris Pendukung Lab', 18, w: FontWeight.w700),
+                  const SizedBox(height: 3),
+                  tx('Barang non-PC beserta jumlah stoknya', 11.5, c: secText),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: MetricTile(
+                          value: '$totalQty',
+                          unit: 'Unit',
+                          label: 'Total Alat Terdata',
+                          sublabel: '${s.visibleItems.length} jenis tercatat',
+                          accent: statusMint,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: MetricTile(
+                          value: '$perlu',
+                          unit: 'Jenis',
+                          label: 'Dalam Pengajuan',
+                          sublabel: 'Butuh tindakan admin',
+                          accent: org,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  btn(
+                    'Ajukan Kerusakan / Pengajuan',
+                    s.online ? () => _laporDariHeader(s) : () {},
+                    icon: Icons.add_rounded,
+                  ),
+                ],
+              ),
+            ),
+
+            Row(
               children: [
-                tx('Kuantitas Barang:', 12, c: Colors.white54),
-                const Spacer(),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: const Icon(Icons.remove_circle_outline_rounded, size: 18, color: Colors.white60),
-                  onPressed: () => HiveDatabaseService.instance.updateSupportQty(item.id, -1),
-                  tooltip: 'Kurangi 1',
-                ),
-                tx('${item.qty} unit', 13, w: FontWeight.w700, c: Colors.white),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  icon: const Icon(Icons.add_circle_outline_rounded, size: 18, color: mint),
-                  onPressed: () => HiveDatabaseService.instance.updateSupportQty(item.id, 1),
-                  tooltip: 'Tambah 1',
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tx('Barang Pendukung', 18, w: FontWeight.w700),
+                      const SizedBox(height: 2),
+                      tx(
+                        byLab[s.labFilter] == null
+                            ? 'Semua laboratorium'
+                            : (byLab[s.labFilter]!.code.isEmpty
+                                ? byLab[s.labFilter]!.name
+                                : '${byLab[s.labFilter]!.code} · ${byLab[s.labFilter]!.name}'),
+                        11.5,
+                        c: secText,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 14),
+
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: [
+                  ChipCount(
+                    label: 'Semua', count: s.visibleItems.length, active: _statusFilter == 0,
+                    onTap: () => setState(() => _statusFilter = 0),
+                  ),
+                  const SizedBox(width: 8),
+                  ChipCount(
+                    label: 'Siap Pakai', count: siap, active: _statusFilter == 1,
+                    onTap: () => setState(() => _statusFilter = 1),
+                  ),
+                  const SizedBox(width: 8),
+                  ChipCount(
+                    label: 'Perlu Tindakan', count: perlu, active: _statusFilter == 2,
+                    onTap: () => setState(() => _statusFilter = 2),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: _search,
+              onChanged: (_) => setState(() {}),
+              decoration: dec(
+                'Cari nama barang, kategori, atau lokasi',
+                prefix: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
+              ),
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+
+            if (shown.isEmpty)
+              EmptyState(
+                icon: Icons.inventory_2_outlined,
+                title: 'Tidak Ada Barang Ditemukan',
+                body: all.isEmpty
+                    ? 'Belum ada barang pendukung yang terdata di laboratorium ini.'
+                    : 'Tidak ada barang yang sesuai dengan filter yang Anda pilih.',
+              )
+            else
+              for (final entry in groups.entries) ...[
+                _GroupTitle(lab: byLab[entry.key], count: entry.value.length),
+                for (final item in entry.value)
+                  _ItemCard(
+                    item: item,
+                    report: openByItem[item.id],
+                    online: s.online,
+                    onReport: () => _lapor(s, item),
+                    onCancel: (r) => _batalkan(s, r),
+                  ),
+              ],
+          ],
+        );
+      });
+}
+
+class _ItemCard extends StatelessWidget {
+  final SupportAsset item;
+  final Report? report;
+  final bool online;
+  final VoidCallback onReport;
+  final ValueChanged<Report> onCancel;
+
+  const _ItemCard({
+    required this.item,
+    required this.report,
+    required this.online,
+    required this.onReport,
+    required this.onCancel,
+  });
+
+  bool get _bermasalah => item.status.butuhPerhatian || item.habis;
+
+  @override
+  Widget build(BuildContext context) => Panel(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: a(_bermasalah ? org : statusMint, 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: a(_bermasalah ? org : statusMint, 0.25)),
+                  ),
+                  child: Icon(
+                    supportCategoryIcon(item.category),
+                    color: _bermasalah ? org : statusMint,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tx(item.name, 15, c: _bermasalah ? org : Colors.white, w: FontWeight.w700),
+                      const SizedBox(height: 3),
+                      tx(
+                        [
+                          item.category.label,
+                          if (item.specifications != null) item.specifications!,
+                        ].join(' · '),
+                        11,
+                        c: secText,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    tx(item.qtyLabel, 14, w: FontWeight.w800, c: item.habis ? redAlert : yel),
+                    const SizedBox(height: 4),
+                    AssetChip(item.status),
+                  ],
+                ),
+              ],
+            ),
+            if (item.location != null) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(Icons.pin_drop_outlined, color: Colors.white38, size: 15),
+                  const SizedBox(width: 6),
+                  Expanded(child: tx('Posisi: ${item.location}', 11, c: Colors.white60)),
+                ],
+              ),
+            ],
+            if (report != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: a(org, 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: a(org, 0.22)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: org, size: 15),
+                        const SizedBox(width: 6),
+                        tx('Catatan Tiket', 10.5, c: org, w: FontWeight.w700),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    tx(report!.issue, 11.5, c: Colors.white70),
+                  ],
+                ),
+              ),
+            ] else if (item.notes != null && item.notes!.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: a(mint, 0.07),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: a(mint, 0.2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.verified_outlined, color: statusMint, size: 15),
+                        const SizedBox(width: 6),
+                        tx('Catatan kondisi', 10.5, c: statusMint, w: FontWeight.w700),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    tx(item.notes!, 11.5, c: Colors.white70),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: item.updatedAt == null
+                      ? tx('Tidak ada riwayat', 11, c: Colors.white38)
+                      : Row(
+                          children: [
+                            const Icon(Icons.schedule_rounded, color: Colors.white38, size: 14),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: tx(
+                                'Terakhir dicek: ${rel(item.updatedAt!)}',
+                                11,
+                                c: secText,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+                const SizedBox(width: 8),
+                if (report != null)
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: online ? () => onCancel(report!) : null,
+                      icon: const Icon(Icons.close_rounded, size: 14),
+                      label: const Text('Batalkan',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: a(org, 0.16),
+                        foregroundColor: org,
+                        minimumSize: const Size(0, 38),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  )
+                else
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: online ? onReport : null,
+                      icon: const Icon(Icons.report_gmailerrorred_rounded, size: 14),
+                      label: Text(
+                        item.habis ? 'Lapor Habis' : 'Ajukan Kerusakan',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: a(yel, 0.16),
+                        foregroundColor: yel,
+                        minimumSize: const Size(0, 38),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+        borderColor: _bermasalah ? a(org, 0.28) : null,
+      );
+}
+
+class _ItemPickerSheet extends StatelessWidget {
+  final List<SupportAsset> items;
+  const _ItemPickerSheet({required this.items});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: const BoxDecoration(
+          color: card,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border(top: BorderSide(color: cardBorder, width: 1.2)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            tx('Pilih Barang Laboratorium', 17, w: FontWeight.w700),
+            const SizedBox(height: 4),
+            tx('Pilih barang yang ingin dilaporkan kerusakannya.', 12, c: secText),
+            const SizedBox(height: 16),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final e in items)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: a(mint, 0.10),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(supportCategoryIcon(e.category), color: mint, size: 18),
+                      ),
+                      title: tx(e.name, 13.5, w: FontWeight.w600),
+                      subtitle: tx('${e.qtyLabel} · ${e.category.label}', 11, c: secText),
+                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white38),
+                      onTap: () => Navigator.pop(context, e),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+}
+
+class _GroupTitle extends StatelessWidget {
+  final Lab? lab;
+  final int count;
+
+  const _GroupTitle({required this.lab, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = lab;
+    final title = l == null ? 'Lab' : (l.code.isEmpty ? l.name : '${l.code} · ${l.name}');
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 8),
+      child: Row(
+        children: [
+          tx(title, 12.5, c: mint, w: FontWeight.w700),
+          const SizedBox(width: 8),
+          tx('$count jenis', 11, c: secText),
+          const Expanded(child: SizedBox.shrink()),
         ],
       ),
     );

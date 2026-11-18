@@ -17,6 +17,8 @@ dependencies:
   shared_preferences: ^2.3.5
   # Render SVG ilustrasi onboarding
   flutter_svg: ^2.0.17
+  supabase_flutter: ^2.18.3
+  connectivity_plus: ^7.3.2
 
 dev_dependencies:
   flutter_test:
@@ -24,9 +26,34 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   hive_ce_generator: ^1.12.0
   build_runner: ^2.16.2
+  flutter_launcher_icons: "^0.14.4"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#0E0E10"
+  adaptive_icon_foreground: "assets/icon/app_icon.png"
+  web:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+    background_color: "#0E0E10"
+    theme_color: "#0E0E10"
 
 flutter:
   uses-material-design: true
+
+  fonts:
+  - family: Inter
+    fonts:
+    - asset: assets/fonts/Inter-400.ttf
+      weight: 400
+    - asset: assets/fonts/Inter-500.ttf
+      weight: 500
+    - asset: assets/fonts/Inter-600.ttf
+      weight: 600
+    - asset: assets/fonts/Inter-700.ttf
+      weight: 700
 
   assets:
   - assets/images/

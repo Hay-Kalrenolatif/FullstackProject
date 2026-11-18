@@ -1,0 +1,326 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#0f141a;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#2c0051", "tertiary-container": "#e1bfff", "surface-container-high": "#252a31", "surface-container-low": "#171c22", "on-surface-variant": "#bbcac4", "surface-bright": "#353a40", "on-secondary": "#2e3300", "secondary-container": "#8b9805", "surface": "#0f141a", "on-surface": "#dee3eb", "tertiary-fixed": "#f0dbff", "inverse-surface": "#dee3eb", "surface-container-lowest": "#0a0f14", "surface-card-elevated": "#1C2729", "on-error-container": "#ffdad6", "outline-variant": "#3c4a45", "surface-variant": "#30353c", "on-secondary-fixed": "#1a1e00", "warning-amber": "#F59E0B", "border-glow-amber": "#F59E0B40", "tertiary-fixed-dim": "#ddb8ff", "surface-container": "#1b2026", "background": "#0f141a", "on-error": "#690005", "border-subtle": "#253438", "primary-fixed": "#72f9d8", "primary-container": "#58e2c2", "surface-dim": "#0f141a", "on-secondary-fixed-variant": "#444b00", "surface-card": "#182326", "error": "#ffb4ab", "on-background": "#dee3eb", "warning-amber-tint": "#F6AD55", "on-tertiary-container": "#7237ac", "on-secondary-container": "#282c00", "primary-fixed-dim": "#51dcbc", "secondary-fixed": "#ddec5f", "secondary": "#c1d045", "border-glow-mint": "#58E2C240", "secondary-fixed-dim": "#c1d045", "primary": "#78ffde", "on-tertiary": "#490081", "on-primary-fixed": "#002019", "tertiary": "#f4e2ff", "inverse-on-surface": "#2c3137", "surface-tint": "#51dcbc", "on-tertiary-fixed-variant": "#62259b", "on-primary": "#00382d", "inverse-primary": "#006b58", "on-primary-fixed-variant": "#005142", "surface-card-subtle": "#161F22", "on-primary-container": "#006251", "error-container": "#93000a", "outline": "#86948e", "status-mint": "#3BD6B0", "surface-container-highest": "#30353c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.25rem", "margin": "1rem", "space-sm": "0.5rem", "gutter": "1rem", "space-md": "1rem", "space-xl": "2rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-lg-mobile": ["Inter"], "label-md": ["Inter"], "headline-md": ["Inter"], "headline-sm": ["Inter"], "label-sm": ["Inter"], "label-lg": ["Inter"], "body-lg": ["Inter"], "body-md": ["Inter"], "body-sm": ["Inter"], "display-stat": ["Inter"], "headline-lg": ["Inter"] }, "fontSize": { "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "display-stat": ["28px", { "lineHeight": "34px", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="h-16 px-space-md flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight uppercase truncate">SIBAL&nbsp;</span><span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-surface-card text-status-mint font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-status-mint animate-pulse"></span>ONLINE</span></div><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Akun</span></div></div><div class="flex items-center gap-space-sm flex-shrink-0"><button class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(88,226,194,0.35)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-28 px-space-md bg-surface min-h-screen"><div class="flex flex-col w-full gap-space-md">
+<!-- Profile Identity Card with Subtle Glow -->
+<section class="relative overflow-hidden rounded-xl bg-surface-card p-space-md shadow-xl">
+<div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-primary/10 blur-2xl pointer-events-none"></div>
+<div class="relative flex flex-col gap-space-md">
+<div class="flex items-start gap-space-md">
+<div class="relative flex-shrink-0">
+<img class="w-16 h-16 rounded-full object-cover shadow-md" data-alt="Portrait photo of Rian Hendrawan, an Indonesian computer lab technician in his early 30s with neat hair wearing a smart charcoal tech polo shirt. Studio rim lighting with soft mint teal ambient reflections, dark high-tech laboratory background, professional demeanor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoPOonQvTP56qmwIdI2PVtjQyKqHR1XFdUAlD8EIlewEgttcW2XHLXK2Ym8kdjoxFo4aEL2VTbWGmyk9M4YsGCIWaJYU5bIORQMV8AVEneX4NmNTx3W_D_QMY4LCOK8HjKnK5B159yOFqZmE0J8U8jCXbEJ-ZGiEgurgQSXaQrJbEd4-hsMB-WKtjzJLoI0i61L66eEF7bWCJuqrX80aX-cJm8_Km8YksonOmYgebi">
+<div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-surface-container flex items-center justify-center">
+<span class="w-3 h-3 rounded-full bg-status-mint"></span>
+</div>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center gap-space-xs flex-wrap">
+<h1 class="font-headline-sm text-headline-sm text-on-surface truncate">Haykal Reno. L, S.Kom</h1>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-container/20 text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+              Kepala Lab
+            </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Kepala Lab Komputer &amp; Jaringan</p>
+<div class="flex items-center gap-1.5 mt-1 font-label-sm text-label-sm text-outline">
+<span class="material-symbols-outlined text-[14px]">badge</span>
+<span class="tracking-wider">ID: LAB-TECH-2026-08</span>
+</div>
+</div>
+</div>
+<!-- Action Button: Edit Profil -->
+<button class="w-full flex items-center justify-center gap-space-xs py-2.5 px-space-md rounded-xl bg-surface-card-elevated text-primary hover:bg-surface-bright active:scale-[0.98] transition-all shadow-sm" id="btn-open-edit">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+<span class="font-label-lg text-label-lg">Edit Profil &amp; Akun</span>
+</button>
+</div>
+</section>
+<!-- Lab Telemetry Stat Widgets -->
+<section class="grid grid-cols-3 gap-space-sm">
+<div class="flex flex-col items-center justify-center p-space-sm rounded-xl bg-surface-card text-center shadow-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary mb-1">
+<span class="material-symbols-outlined text-[18px]">meeting_room</span>
+</div>
+<span class="font-display-stat text-display-stat text-on-surface tracking-tight">3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 leading-tight">Lab Terhubung</span>
+</div>
+<div class="flex flex-col items-center justify-center p-space-sm rounded-xl bg-surface-card text-center shadow-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-secondary mb-1">
+<span class="material-symbols-outlined text-[18px]">desktop_windows</span>
+</div>
+<span class="font-display-stat text-display-stat text-on-surface tracking-tight">32</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 leading-tight">Unit Terkelola</span>
+</div>
+<div class="flex flex-col items-center justify-center p-space-sm rounded-xl bg-surface-card text-center shadow-md">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-status-mint mb-1">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</div>
+<span class="font-display-stat text-display-stat text-status-mint tracking-tight">98.2<span class="text-label-md font-label-md">%</span></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 leading-tight">Uptime Lab</span>
+</div>
+</section>
+<!-- Telemetry Health Ring Micro-Card -->
+<section class="flex items-center gap-space-md p-space-md rounded-xl bg-surface-card shadow-md">
+<div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+<svg class="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+<circle cx="24" cy="24" fill="none" r="20" stroke="#253438" stroke-width="4"></circle>
+<circle cx="24" cy="24" fill="none" r="20" stroke="#58E2C2" stroke-dasharray="125.6" stroke-dashoffset="12.5" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<span class="material-symbols-outlined text-[18px] text-primary absolute">dns</span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-on-surface">Status SIBAL Daemon</span>
+<span class="font-label-sm text-label-sm text-status-mint">Sinkron Aktif</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Terakhir diperbarui: Hari ini, 14:32 WIB</p>
+</div>
+</section>
+<!-- Account & Management Menu List -->
+<section class="flex flex-col rounded-xl bg-surface-card shadow-xl overflow-hidden">
+<!-- Item 1: Riwayat Pengajuan Saya -->
+<a class="flex items-center justify-between p-space-md hover:bg-surface-bright/40 active:bg-surface-bright transition-colors" href="#">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-card-elevated flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">history_edu</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Riwayat Pengajuan Saya</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Lihat status perbaikan PC &amp; alat yang pernah diajukan</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm">2 Diproses</span>
+<span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
+</div>
+</a>
+<div class="h-[1px] w-full bg-surface-container-high/40"></div>
+<!-- Item 2: Notifikasi & Bot Telegram (Interactive Toggle) -->
+<div class="flex items-center justify-between p-space-md hover:bg-surface-bright/40 transition-colors">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-card-elevated flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">send_and_archive</span>
+</div>
+<div class="flex flex-col min-w-0 pr-2">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Notifikasi &amp; Bot Telegram</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Toggle on/off peringatan instan kerusakan unit</span>
+</div>
+</div>
+<button aria-pressed="true" class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full bg-primary transition-colors focus:outline-none" id="tg-toggle" type="button">
+<span class="inline-block h-5 w-5 transform rounded-full bg-on-primary translate-x-5.5 mt-0.5 transition-transform duration-200 ease-in-out" id="tg-toggle-indicator"></span>
+</button>
+</div>
+<div class="h-[1px] w-full bg-surface-container-high/40"></div>
+<!-- Item 3: Keamanan & Ganti Sandi -->
+<a class="flex items-center justify-between p-space-md hover:bg-surface-bright/40 active:bg-surface-bright transition-colors" href="#">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-card-elevated flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">lock_reset</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Keamanan &amp; Ganti Sandi</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Pembaruan kata sandi &amp; autentikasi dua faktor</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[20px] flex-shrink-0 ml-2">chevron_right</span>
+</a>
+<div class="h-[1px] w-full bg-surface-container-high/40"></div>
+<!-- Item 4: Unduh Laporan Lab -->
+<button class="flex items-center justify-between w-full text-left p-space-md hover:bg-surface-bright/40 active:bg-surface-bright transition-colors" id="btn-download-report">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-card-elevated flex items-center justify-center text-status-mint flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">file_download</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Unduh Laporan Lab</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Rekap inventaris bulanan format PDF/Excel</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm">PDF</span>
+<span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
+</div>
+</button>
+<div class="h-[1px] w-full bg-surface-container-high/40"></div>
+<!-- Item 5: Pusat Bantuan & Panduan Lab -->
+<a class="flex items-center justify-between p-space-md hover:bg-surface-bright/40 active:bg-surface-bright transition-colors" href="#">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-card-elevated flex items-center justify-center text-tertiary-fixed-dim flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">help_center</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Pusat Bantuan &amp; Panduan Lab</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">SOP penanganan kendala &amp; dokumentasi SIBAL</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-[20px] flex-shrink-0 ml-2">chevron_right</span>
+</a>
+</section>
+<!-- Lab Administration System Banner -->
+<section class="p-space-md rounded-xl bg-surface-card-subtle flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">token</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface">SIBAL Engine Enterprise v4.8</span>
+<span class="font-body-sm text-body-sm text-outline">Build #2026.03.11</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-card text-on-surface-variant font-label-sm text-label-sm">Stable</span>
+</section>
+<!-- Logout Action -->
+<section class="mt-space-xs">
+<button class="w-full flex items-center justify-center gap-space-xs py-3.5 px-space-md rounded-xl bg-error-container/20 text-error hover:bg-error-container/30 active:scale-[0.98] transition-all shadow-md" id="btn-logout">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-label-lg text-label-lg">Keluar Akun</span>
+</button>
+</section>
+<!-- Edit Profil Modal Backdrop & Sheet (Hidden by default) -->
+<div aria-modal="true" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-end justify-center hidden" id="modal-edit-profile" role="dialog">
+<div class="w-full max-w-lg bg-surface-card-elevated rounded-t-2xl p-space-lg flex flex-col gap-space-md shadow-2xl max-h-[751px] overflow-y-auto">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Edit Profil &amp; Kredensial</h2>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface" id="btn-close-edit">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<form class="flex flex-col gap-space-md" id="form-edit-profile" onsubmit="event.preventDefault();">
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Nama Lengkap &amp; Gelar</label>
+<div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-container-high">
+<span class="material-symbols-outlined text-outline text-[18px]">person</span>
+<input class="bg-transparent border-0 text-on-surface font-body-md text-body-md focus:outline-none w-full" type="text" value="Rian Hendrawan, S.Kom">
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Email Institusi</label>
+<div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-container-high">
+<span class="material-symbols-outlined text-outline text-[18px]">mail</span>
+<input class="bg-transparent border-0 text-on-surface font-body-md text-body-md focus:outline-none w-full" type="email" value="rian.hendrawan@lab.sibal.ac.id">
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Nomor Telepon / WhatsApp</label>
+<div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-container-high">
+<span class="material-symbols-outlined text-outline text-[18px]">phone</span>
+<input class="bg-transparent border-0 text-on-surface font-body-md text-body-md focus:outline-none w-full" type="tel" value="+62 812-4498-3201">
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Kata Sandi Baru (Opsional)</label>
+<div class="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-container-high">
+<span class="material-symbols-outlined text-outline text-[18px]">key</span>
+<input class="bg-transparent border-0 text-on-surface font-body-md text-body-md focus:outline-none w-full" placeholder="Kosongkan bila tidak diubah" type="password">
+</div>
+</div>
+<div class="flex gap-space-sm mt-2">
+<button class="flex-1 py-2.5 rounded-xl bg-surface-container text-on-surface font-label-lg text-label-lg hover:bg-surface-container-high" id="btn-cancel-edit" type="button">Batal</button>
+<button class="flex-1 py-2.5 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg shadow-[0_0_12px_rgba(88,226,194,0.3)]" id="btn-save-edit" type="button">Simpan Perubahan</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Download Toast Feedback -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 px-space-md py-2.5 rounded-xl bg-surface-container-highest text-on-surface shadow-2xl flex items-center gap-2 transition-all opacity-0 pointer-events-none z-50" id="toast-feedback">
+<span class="material-symbols-outlined text-status-mint text-[18px]" id="toast-icon">check_circle</span>
+<span class="font-body-sm text-body-sm" id="toast-text">Laporan berhasil diunduh</span>
+</div>
+</div>
+<script>
+  (function() {
+    // Modal toggle behavior
+    const openBtn = document.getElementById('btn-open-edit');
+    const closeBtn = document.getElementById('btn-close-edit');
+    const cancelBtn = document.getElementById('btn-cancel-edit');
+    const saveBtn = document.getElementById('btn-save-edit');
+    const modal = document.getElementById('modal-edit-profile');
+    const toast = document.getElementById('toast-feedback');
+    const toastText = document.getElementById('toast-text');
+    const toastIcon = document.getElementById('toast-icon');
+
+    function showToast(msg, icon = 'check_circle') {
+      if (!toast) return;
+      toastText.textContent = msg;
+      toastIcon.textContent = icon;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+        toast.classList.remove('opacity-100');
+      }, 2400);
+    }
+
+    function toggleModal(show) {
+      if (modal) {
+        if (show) {
+          modal.classList.remove('hidden');
+          document.body.style.overflow = 'hidden';
+        } else {
+          modal.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      }
+    }
+
+    if (openBtn) openBtn.addEventListener('click', () => toggleModal(true));
+    if (closeBtn) closeBtn.addEventListener('click', () => toggleModal(false));
+    if (cancelBtn) cancelBtn.addEventListener('click', () => toggleModal(false));
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        toggleModal(false);
+        showToast('Profil SIBAL berhasil diperbarui');
+      });
+    }
+
+    // Telegram Switch interactive simulation
+    const tgBtn = document.getElementById('tg-toggle');
+    const tgIndicator = document.getElementById('tg-toggle-indicator');
+    let tgActive = true;
+
+    if (tgBtn && tgIndicator) {
+      tgBtn.addEventListener('click', () => {
+        tgActive = !tgActive;
+        if (tgActive) {
+          tgBtn.classList.remove('bg-surface-container-high');
+          tgBtn.classList.add('bg-primary');
+          tgIndicator.classList.remove('translate-x-0.5', 'bg-on-surface-variant');
+          tgIndicator.classList.add('translate-x-5.5', 'bg-on-primary');
+          showToast('Bot Telegram diaktifkan');
+        } else {
+          tgBtn.classList.remove('bg-primary');
+          tgBtn.classList.add('bg-surface-container-high');
+          tgIndicator.classList.remove('translate-x-5.5', 'bg-on-primary');
+          tgIndicator.classList.add('translate-x-0.5', 'bg-on-surface-variant');
+          showToast('Bot Telegram dinonaktifkan', 'notifications_off');
+        }
+      });
+    }
+
+    // Download lab report interaction
+    const downloadBtn = document.getElementById('btn-download-report');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', () => {
+        showToast('Mempersiapkan rekap laporan PDF SIBAL...');
+      });
+    }
+
+    // Logout confirmation prompt
+    const logoutBtn = document.getElementById('btn-logout');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin keluar dari sesi SIBAL LAB?')) {
+          showToast('Sesi berakhir. Mengalihkan...', 'logout');
+        }
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.5)]" data-active-classes="text-primary font-label-md shadow-[0_0_16px_rgba(88,226,194,0.25)]"><div class="flex items-center justify-around h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm tracking-tight">Dashboard</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="unit-pc" href="#"><span class="material-symbols-outlined text-[22px]">desktop_windows</span><span class="font-label-sm text-label-sm tracking-tight">Unit PC</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="inventaris" href="#"><span class="material-symbols-outlined text-[22px]">inventory_2</span><span class="font-label-sm text-label-sm tracking-tight">Inventaris</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="pengajuan" href="#"><span class="material-symbols-outlined text-[22px]">build</span><span class="font-label-sm text-label-sm tracking-tight">Pengajuan</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl transition-all text-primary font-label-md shadow-[0_0_16px_rgba(88,226,194,0.25)]" data-path="akun" href="#"><span class="material-symbols-outlined text-[22px]">person</span><span class="font-label-sm text-label-sm tracking-tight">Akun</span></a></div></nav>
+
+</body></html>

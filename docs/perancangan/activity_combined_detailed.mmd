@@ -1,0 +1,66 @@
+%% v2 (2026-11-05) — kosakata status diganti ke nilai wire database:
+%% menunggu diperiksa diproses selesai ditolak batal, dan aset kembali baik.
+%% Ditambah: gerbang offline, cabang saksi, cabang pembatalan, cabang stok, dan aturan approve.
+flowchart TD
+    A([Mulai]) --> B[Pengguna membuka aplikasi SIBAL]
+    B --> B1{Onboarding sudah dilihat?}
+    B1 -->|Belum| B2[Selesaikan onboarding lalu simpan flag perangkat] --> C
+    B1 -->|Sudah| C[Pengguna login lewat Supabase Auth memakai username]
+    C --> C1[Username diubah menjadi email sintetis username di domain sibal.my.id]
+    C1 --> D{Login berhasil?}
+    D -->|Tidak| C
+    D -->|Ya| E[Data ditarik dari PostgREST lalu ditulis penuh ke cache Hive]
+    E --> F{Perangkat online?}
+    F -->|Tidak| F1[Banner offline tampil, daftar dibaca dari cache, tombol pengajuan dikunci] --> E
+    F -->|Ya| G[Pengguna membuka halaman PC atau Inventaris Pendukung]
+    G --> H[Pengguna memilih Lab dari tabel labs]
+    H --> I[Sistem menampilkan daftar aset beserta status dan spesifikasi]
+    I --> J[Pengguna memilih satu aset lalu melihat detail]
+    J --> K[Pengguna menekan Ajukan Kerusakan dan mengisi deskripsi serta severity]
+    K --> L[Klien memanggil satu RPC sibal_report_issue]
+    L --> M{Aset sudah punya tiket terbuka?}
+    M -->|Ya| M1[Pengguna dicatat sebagai saksi pada tiket yang ada, pesan dikirim ke pelapor]
+    M -->|Tidak| M2[Tiket baru dibuat dengan status menunggu dan prev_asset_status direkam]
+    M1 --> N
+    M2 --> N[Status aset berpindah menjadi dalam_pengajuan di transaksi yang sama]
+    N --> O[Pengguna melihat konfirmasi laporan terkirim]
+
+    O --> P[Admin membuka Flutter Web Admin dan login]
+    P --> Q{role admin dan is_active?}
+    Q -->|Tidak| R[Server menolak setiap RPC admin, UI hanya menampilkan layar bukan admin] --> Z([Selesai])
+    Q -->|Ya| S[Admin membuka tab Antrean dan meninjau deskripsi aset lab pelapor dan saksi]
+
+    S --> T[Admin menekan Periksa]
+    T --> U[Tiket menjadi diperiksa dan pekerjaan tertunda dibuat]
+    U --> V{Keputusan Admin}
+
+    V -->|Tolak| W1[Admin mengisi alasan penolakan]
+    W1 --> W2[sibal_reject_report - tiket menjadi ditolak, admin_notes tersimpan]
+    W2 --> W3[Status aset dipulihkan ke prev_asset_status]
+    W3 --> Z
+
+    V -->|Setujui| X1[Admin mengisi action_taken dan kind dan p_asset_status]
+    X1 --> X2{p_asset_status yang dipilih?}
+    X2 -->|rusak| Y1[Tiket menjadi diproses dan aset tetap rusak]
+    X2 -->|diperiksa| Y2[Tiket menjadi diproses dan aset menjadi diperiksa]
+    X2 -->|nilai lain| Y3[Ditolak server - baik habis purnatugas bukan pilihan approve] --> X1
+    Y1 --> X4{Ada barang masuk atau keluar?}
+    Y2 --> X4
+    X4 -->|Ya| X5[p_qty_delta disertai alasan dan dibukukan ke maintenance_histories kategori pelengkapan atau purnatugas]
+    X4 -->|Tidak| X6[Delta nol, jangan diisi lagi saat Complete]
+    X5 --> AA
+    X6 --> AA[Admin melakukan perbaikan di dunia nyata]
+
+    AA --> AB{Perbaikan selesai?}
+    AB -->|Belum| AA
+    AB -->|Ya| AC[Admin menekan Selesaikan lewat sibal_complete_maintenance]
+    AC --> AD[Pekerjaan menjadi selesai dengan completed_at dan tanggal kalender WIB]
+    AD --> AE[Aset kembali baik atau purnatugas sesuai p_outcome dan tiket menjadi selesai]
+    AE --> AF{Perlu dibuka kembali?}
+    AF -->|Ya| AG[sibal_reopen_report - tiket kembali ke antrean] --> AA
+    AF -->|Tidak| AH[Pengguna melihat riwayat perbaikan di Log Servis dan Pengajuan Saya]
+
+    AH --> AI{Pelapor membatalkan sebelum selesai?}
+    AI -->|Ya, dan hanya pemilik serta tiket masih terbuka| AJ[sibal_cancel_report - tiket menjadi batal dan aset dipulihkan]
+    AI -->|Tidak| Z
+    AJ --> Z

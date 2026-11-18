@@ -2,63 +2,68 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 
 class Logo extends StatelessWidget {
-  const Logo({super.key});
+  final bool compact;
+  const Logo({super.key, this.compact = false});
 
   @override
-  Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              gradient: const LinearGradient(
-                colors: [mint, yel],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: mint.withAlpha(50),
-                  blurRadius: 12,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: bg,
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                ),
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: mint,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              tx('SIBAL', 17, w: FontWeight.w700),
-              tx('SMART LAB', 9, c: mint, w: FontWeight.w600),
-            ],
+  Widget build(BuildContext context) {
+    final mark = Container(
+      width: 42,
+      height: 42,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        gradient: const LinearGradient(
+          colors: [mint, yel],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: mint.withAlpha(50),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
           ),
         ],
-      );
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(7),
+            ),
+          ),
+          Container(
+            width: 8,
+            height: 8,
+            decoration: const BoxDecoration(
+              color: mint,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (compact) return mark;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        mark,
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            tx('SIBAL', 17, w: FontWeight.w700),
+            tx('SMART LAB', 9, c: mint, w: FontWeight.w600),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class Panel extends StatefulWidget {

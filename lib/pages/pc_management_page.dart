@@ -1,9 +1,23 @@
+/// Daftar unit PC.
+///
+/// Halaman ini baca-saja terhadap inventaris. Yang bisa dilakukan anggota lab
+/// hanya satu: mengajukan kerusakan. Perubahan status — termasuk "baik"
+/// kembali — terjadi di database setelah admin memverifikasi.
+library;
+
 import 'package:flutter/material.dart';
-import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+
+import '../models/asset_enums.dart';
+import '../models/assets.dart';
+import '../models/tickets.dart';
+import '../state/app_state.dart';
 import '../theme.dart';
-import '../models/pc_item.dart';
-import '../services/hive_database_service.dart';
 import '../widgets/common.dart';
+import '../widgets/mock_ui.dart';
+import '../widgets/report_sheet.dart';
+import '../widgets/status_chip.dart';
+import '../widgets/sync_banner.dart';
+import '../widgets/state_scope.dart';
 
 class PCManagementPage extends StatefulWidget {
   const PCManagementPage({super.key});
@@ -13,480 +27,555 @@ class PCManagementPage extends StatefulWidget {
 }
 
 class _PCManagementPageState extends State<PCManagementPage> {
-  int filterIndex = 0; // 0 = Semua, 1 = Normal, 2 = Rusak
+  final _search = TextEditingController();
+  int _statusFilter = 0; // 0 semua, 1 normal, 2 perlu tindakan
 
-  void _showPCForm(BuildContext context, [PCItem? existing]) {
-    final isEdit = existing != null;
-    final numCtrl = TextEditingController(text: existing?.pcNumber ?? '');
-    final procCtrl = TextEditingController(text: existing?.processor ?? 'Intel Core i5-12400');
-    final ramCtrl = TextEditingController(text: existing?.ram ?? '16 GB DDR4');
-    final notesCtrl = TextEditingController(text: existing?.notes ?? '');
-    String status = existing?.status ?? 'Normal';
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: card,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setSheetState) => Padding(
-          padding: EdgeInsets.fromLTRB(
-            22,
-            20,
-            22,
-            24 + MediaQuery.of(ctx).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.white24,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  const Icon(Icons.desktop_windows_rounded, color: mint, size: 22),
-                  const SizedBox(width: 10),
-                  tx(isEdit ? 'Edit Spesifikasi PC' : 'Tambah Unit PC Baru', 18, w: FontWeight.w700),
-                ],
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: numCtrl,
-                decoration: dec('Nomor / Label PC (contoh: PC-01)', prefix: const Icon(Icons.tag_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: procCtrl,
-                decoration: dec('Tipe Prosesor', prefix: const Icon(Icons.memory_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 8),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    for (final p in ['Core i5-12400', 'Core i7-13700', 'Ryzen 5 5600G', 'Core i3-12100'])
-                      Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: ActionChip(
-                          label: tx(p, 11, c: mint, w: FontWeight.w600),
-                          backgroundColor: a(mint, 0.1),
-                          side: BorderSide(color: a(mint, 0.2)),
-                          padding: EdgeInsets.zero,
-                          onPressed: () => setSheetState(() => procCtrl.text = p),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: ramCtrl,
-                decoration: dec('Kapasitas RAM', prefix: const Icon(Icons.storage_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (final r in ['8 GB DDR4', '16 GB DDR4', '32 GB DDR4', '16 GB DDR5'])
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: ActionChip(
-                        label: tx(r, 11, c: yel, w: FontWeight.w600),
-                        backgroundColor: a(yel, 0.1),
-                        side: BorderSide(color: a(yel, 0.2)),
-                        padding: EdgeInsets.zero,
-                        onPressed: () => setSheetState(() => ramCtrl.text = r),
-                      ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              // Status selector
-              tx('Status Operasional Unit', 12, c: Colors.white60),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setSheetState(() => status = 'Normal'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: status == 'Normal' ? a(mint, 0.15) : cardSurface,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: status == 'Normal' ? mint : Colors.white12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.check_circle_rounded, size: 16, color: status == 'Normal' ? mint : Colors.white38),
-                            const SizedBox(width: 6),
-                            tx('Normal', 13, c: status == 'Normal' ? mint : Colors.white70, w: FontWeight.w600),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setSheetState(() => status = 'Rusak'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: status == 'Rusak' ? a(org, 0.15) : cardSurface,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: status == 'Rusak' ? org : Colors.white12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.warning_amber_rounded, size: 16, color: status == 'Rusak' ? org : Colors.white38),
-                            const SizedBox(width: 6),
-                            tx('Rusak', 13, c: status == 'Rusak' ? org : Colors.white70, w: FontWeight.w600),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: notesCtrl,
-                decoration: dec('Catatan Tambahan (Opsional)', prefix: const Icon(Icons.edit_note_rounded, color: Colors.white54, size: 18)),
-              ),
-              const SizedBox(height: 18),
-              SizedBox(
-                width: double.infinity,
-                child: btn(isEdit ? 'Perbarui Data PC' : 'Simpan', () {
-                  final num = numCtrl.text.trim();
-                  final proc = procCtrl.text.trim();
-                  final ram = ramCtrl.text.trim();
-
-                  if (num.isEmpty) {
-                    snack(context, 'Masukkan nomor/label PC terlebih dahulu', isError: true);
-                    return;
-                  }
-
-                  final item = PCItem(
-                    id: existing?.id ?? 'pc_${DateTime.now().millisecondsSinceEpoch}',
-                    pcNumber: num,
-                    processor: proc.isEmpty ? 'Intel Core i5' : proc,
-                    ram: ram.isEmpty ? '16 GB' : ram,
-                    status: status,
-                    updatedAt: DateTime.now(),
-                    notes: notesCtrl.text.trim().isEmpty ? null : notesCtrl.text.trim(),
-                  );
-
-                  HiveDatabaseService.instance.savePC(item);
-                  Navigator.pop(ctx);
-                  snack(context, '$num berhasil disimpan ke pc_box!');
-                }, icon: Icons.save_rounded),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
   }
 
-  void _confirmDeletePC(BuildContext context, PCItem pc) {
-    showDialog(
+  Future<void> _lapor(AppState s, PcAsset pc) async {
+    final res = await openReportSheet(
+      context,
+      assetLabel: '${pc.codename} · ${pc.processor}',
+      pcId: pc.id,
+      currentStatus: pc.status,
+    );
+    if (!mounted || res == null) return;
+    snack(context, res.message, isError: !res.sent);
+  }
+
+  /// Buka sheet pilih unit, lalu lempar ke sheet laporan untuk PC terpilih.
+  Future<void> _laporDariHeader(AppState s) async {
+    final pcs = s.visiblePcs;
+    if (pcs.isEmpty) return;
+    final chosen = await showModalBottomSheet<PcAsset>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _PcPickerSheet(pcs: pcs),
+    );
+    if (chosen == null || !mounted) return;
+    await _lapor(s, chosen);
+  }
+
+  Future<void> _batalkan(AppState s, Report r) async {
+    final yes = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: card,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: tx('Hapus Data PC?', 18, w: FontWeight.w700),
+        title: tx('Batalkan pengajuan?', 16, w: FontWeight.w700),
         content: tx(
-          'Unit "${pc.pcNumber}" (${pc.processor}, ${pc.ram}) akan dihapus secara permanen!!!.',
-          14,
+          'Status unit kembali ke ${r.prevAssetStatus.label}. Hanya bisa selama '
+          'admin belum memprosesnya.',
+          12.5,
           c: Colors.white70,
         ),
         actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: tx('Batal', 13, c: secText)),
           TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: tx('Batal', 14, c: Colors.white60),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: org),
-            onPressed: () {
-              HiveDatabaseService.instance.deletePC(pc.id);
-              Navigator.pop(ctx);
-              snack(context, '${pc.pcNumber} telah dihapus');
-            },
-            child: tx('Hapus', 14, c: bg, w: FontWeight.w700),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: tx('Ya, batalkan', 13, c: org, w: FontWeight.w700),
           ),
         ],
       ),
     );
+    if (yes != true || !mounted) return;
+    try {
+      await s.cancelMyReport(r.id);
+      if (mounted) snack(context, 'Pengajuan dibatalkan dan status unit dipulihkan.');
+    } catch (e) {
+      if (mounted) snack(context, '$e', isError: true);
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final db = HiveDatabaseService.instance;
+  Widget build(BuildContext context) => stateScope(builder: (context, s) {
+        final q = _search.text.trim().toLowerCase();
+        var all = s.visiblePcs;
+        if (_statusFilter == 1) {
+          all = all.where((p) => p.status == AssetStatus.baik).toList();
+        } else if (_statusFilter == 2) {
+          all = all.where((p) => p.status.butuhPerhatian).toList();
+        }
+        final shown = q.isEmpty
+            ? all
+            : all
+                .where((p) =>
+                    p.codename.toLowerCase().contains(q) ||
+                    p.processor.toLowerCase().contains(q) ||
+                    p.ram.toLowerCase().contains(q) ||
+                    (p.location ?? '').toLowerCase().contains(q))
+                .toList();
 
-    return ValueListenableBuilder(
-      valueListenable: db.pcBox.listenable(),
-      builder: (context, Box box, _) {
-        final allPcs = db.getAllPCs();
-        final filtered = allPcs.where((p) {
-          if (filterIndex == 1) return p.isNormal;
-          if (filterIndex == 2) return !p.isNormal;
-          return true;
-        }).toList();
+        final groups = <String, List<PcAsset>>{};
+        for (final p in shown) {
+          groups.putIfAbsent(p.labId, () => []).add(p);
+        }
+        for (final l in groups.values) {
+          l.sort((a, b) => a.codename.compareTo(b.codename));
+        }
+        final byLab = <String, Lab>{for (final l in s.labs) l.id: l};
 
-        final normalCount = allPcs.where((p) => p.isNormal).length;
-        final brokenCount = allPcs.length - normalCount;
+        final totalPc = s.visiblePcs.length;
+        final pcBaik = s.visiblePcs.where((p) => p.status == AssetStatus.baik).length;
+        final pcButuh = s.visiblePcs.where((p) => p.status.butuhPerhatian).length;
+        final pcPct = cl(totalPc == 0 ? 1.0 : pcBaik / totalPc);
+
+        final pcCounts = <String, int>{};
+        for (final p in s.pcs) {
+          pcCounts[p.labId] = (pcCounts[p.labId] ?? 0) + 1;
+        }
+
+        final openByPc = <String, Report>{};
+        for (final r in s.myReports) {
+          if (r.status.terbuka && r.pcId != null) openByPc[r.pcId!] = r;
+        }
 
         return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 110),
+          padding: const EdgeInsets.fromLTRB(20, 2, 20, 110),
           physics: const BouncingScrollPhysics(),
           children: [
-            tx('Manajemen PC & Spesifikasi', 22, w: FontWeight.w700, al: TextAlign.center),
+            SyncBanner(s),
 
-            // Segmented Filter
-            Seg(
-              const ['Semua', 'Normal', 'Rusak'],
-              filterIndex,
-              (val) => setState(() => filterIndex = val),
-            ),
-
-            // Quick Counter Banner
             Row(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                    decoration: BoxDecoration(
-                      color: card,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: cardBorder),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            tx('PC Normal', 11, c: Colors.white54),
-                            const SizedBox(height: 2),
-                            tx('$normalCount Unit', 18, w: FontWeight.w700, c: mint),
-                          ],
-                        ),
-                        const Icon(Icons.check_circle_rounded, color: mint, size: 22),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
-                    decoration: BoxDecoration(
-                      color: card,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: cardBorder),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            tx('PC Rusak', 11, c: Colors.white54),
-                            const SizedBox(height: 2),
-                            tx('$brokenCount Unit', 18, w: FontWeight.w700, c: brokenCount > 0 ? org : Colors.white70),
-                          ],
-                        ),
-                        Icon(Icons.warning_amber_rounded, color: brokenCount > 0 ? org : Colors.white38, size: 22),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-
-            // Header Action
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                tx('Daftar Unit PC (${filtered.length})', 15, w: FontWeight.w600),
-                TextButton.icon(
-                  onPressed: () => _showPCForm(context),
-                  icon: const Icon(Icons.add_rounded, size: 16, color: mint),
-                  label: tx('PC Baru', 13, c: mint, w: FontWeight.w600),
+                Expanded(child: tx('PILIH RUANG LABORATORIUM', 10.5, c: secText, w: FontWeight.w700)),
+                Row(
+                  children: [
+                    Container(width: 6, height: 6, decoration: const BoxDecoration(shape: BoxShape.circle, color: statusMint)),
+                    const SizedBox(width: 6),
+                    tx('${s.labsWithData.length} Lab Terhubung', 10.5, c: secText),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 8),
+            LabPicker(
+              labs: s.labsWithData,
+              selectedId: s.labFilter,
+              counts: pcCounts,
+              onSelect: (id) => s.setLabFilter(id),
+            ),
+            const SizedBox(height: 18),
 
-            // PC Cards List
-            for (final pc in filtered) _buildPCCard(context, pc),
-
-            if (filtered.isEmpty)
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  children: [
-                    const Icon(Icons.desktop_access_disabled_rounded, size: 40, color: Colors.white24),
-                    const SizedBox(height: 10),
-                    tx('Tidak ada unit PC pada filter ini', 13, c: Colors.white38, al: TextAlign.center),
-                    const SizedBox(height: 12),
-                    btn('+ Tambah Unit PC', () => _showPCForm(context), tonal: true),
-                  ],
+            Row(
+              children: [
+                Expanded(
+                  child: MetricTile(
+                    value: '$pcBaik',
+                    unit: 'Unit',
+                    label: 'PC Normal',
+                    sublabel: '${(pcPct * 100).round()}% siap praktikum',
+                    accent: statusMint,
+                  ),
                 ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: MetricTile(
+                    value: '$pcButuh',
+                    unit: 'Unit',
+                    label: 'Perlu Servis',
+                    sublabel: pcButuh > 0 ? 'Tiket aktif' : 'Tidak ada',
+                    accent: org,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tx('Unit Komputer', 18, w: FontWeight.w700),
+                      const SizedBox(height: 2),
+                      tx(
+                        byLab[s.labFilter] == null
+                            ? 'Semua laboratorium'
+                            : (byLab[s.labFilter]!.code.isEmpty
+                                ? byLab[s.labFilter]!.name
+                                : '${byLab[s.labFilter]!.code} · ${byLab[s.labFilter]!.name}'),
+                        11.5,
+                        c: secText,
+                      ),
+                    ],
+                  ),
+                ),
+                if (s.online)
+                  FilledButton.icon(
+                    onPressed: () => _laporDariHeader(s),
+                    icon: const Icon(Icons.add_rounded, size: 15),
+                    label: const Text('Ajukan Kerusakan',
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 11)),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: mint,
+                      foregroundColor: bg,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 14),
+
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                children: [
+                  ChipCount(
+                    label: 'Semua', count: totalPc, active: _statusFilter == 0,
+                    onTap: () => setState(() => _statusFilter = 0),
+                  ),
+                  const SizedBox(width: 8),
+                  ChipCount(
+                    label: 'Normal', count: pcBaik, active: _statusFilter == 1,
+                    onTap: () => setState(() => _statusFilter = 1),
+                  ),
+                  const SizedBox(width: 8),
+                  ChipCount(
+                    label: 'Perlu Tindakan', count: pcButuh, active: _statusFilter == 2,
+                    onTap: () => setState(() => _statusFilter = 2),
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(height: 12),
+
+            TextField(
+              controller: _search,
+              onChanged: (_) => setState(() {}),
+              decoration: dec(
+                'Cari kode, prosesor, RAM, atau posisi',
+                prefix: const Icon(Icons.search_rounded, color: Colors.white38, size: 18),
+              ),
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+
+            if (shown.isEmpty)
+              EmptyState(
+                icon: Icons.desktop_windows_rounded,
+                title: 'Tidak Ada PC Ditemukan',
+                body: all.isEmpty
+                    ? 'Belum ada unit komputer yang terdata di laboratorium ini.'
+                    : 'Tidak ada unit yang sesuai dengan filter yang Anda pilih.',
+              )
+            else
+              for (final entry in groups.entries) ...[
+                _LabGroupTitle(lab: byLab[entry.key], count: entry.value.length),
+                for (final pc in entry.value)
+                  _PcCard(
+                    pc: pc,
+                    report: openByPc[pc.id],
+                    online: s.online,
+                    onReport: () => _lapor(s, pc),
+                    onCancel: (r) => _batalkan(s, r),
+                    onDetail: () => _detail(s, pc),
+                  ),
+              ],
           ],
         );
-      },
+      });
+
+  void _detail(AppState s, PcAsset pc) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _PcDetailSheet(pc: pc, online: s.online, onReport: () {
+        Navigator.pop(context);
+        _lapor(s, pc);
+      }),
     );
   }
+}
 
-  Widget _buildPCCard(BuildContext context, PCItem pc) {
-    final isNormal = pc.isNormal;
-    final color = isNormal ? mint : org;
+class _PcCard extends StatelessWidget {
+  final PcAsset pc;
+  final Report? report;
+  final bool online;
+  final VoidCallback onReport;
+  final ValueChanged<Report> onCancel;
+  final VoidCallback onDetail;
 
-    return Panel(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: a(color, 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: a(color, 0.3)),
+  const _PcCard({
+    required this.pc,
+    required this.report,
+    required this.online,
+    required this.onReport,
+    required this.onCancel,
+    required this.onDetail,
+  });
+
+  bool get _bermasalah => pc.status.butuhPerhatian;
+
+  @override
+  Widget build(BuildContext context) => Panel(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: a(_bermasalah ? org : statusMint, 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: a(_bermasalah ? org : statusMint, 0.25)),
+                  ),
+                  child: Icon(
+                    _bermasalah ? Icons.error_outline_rounded : Icons.desktop_windows_rounded,
+                    color: _bermasalah ? org : statusMint,
+                    size: 20,
+                  ),
                 ),
-                child: Icon(Icons.desktop_windows_rounded, color: color, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      tx(pc.codename, 15, c: _bermasalah ? org : Colors.white, w: FontWeight.w700),
+                      const SizedBox(height: 3),
+                      tx(pc.specLine, 11, c: secText, maxLines: 2, overflow: TextOverflow.ellipsis),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                AssetChip(pc.status),
+              ],
+            ),
+            if (pc.location != null) ...[
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(Icons.pin_drop_outlined, color: Colors.white38, size: 15),
+                  const SizedBox(width: 6),
+                  Expanded(child: tx('Posisi: ${pc.location}', 11, c: Colors.white60)),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
+            ],
+            if (report != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: a(org, 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: a(org, 0.22)),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        tx(pc.pcNumber, 16, w: FontWeight.w700),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: a(color, 0.14),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: a(color, 0.3)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              PulseBadge(color: color),
-                              const SizedBox(width: 5),
-                              tx(pc.status, 11, c: color, w: FontWeight.w700),
-                            ],
-                          ),
-                        ),
+                        const Icon(Icons.warning_amber_rounded, color: org, size: 15),
+                        const SizedBox(width: 6),
+                        tx('Deskripsi Masalah Kerusakan', 10.5, c: org, w: FontWeight.w700),
                       ],
                     ),
-                    const SizedBox(height: 2),
-                    tx('Pembaruan: ${fd(pc.updatedAt)}', 11, c: Colors.white38),
+                    const SizedBox(height: 6),
+                    tx(report!.issue, 11.5, c: Colors.white70),
                   ],
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined, size: 18, color: Colors.white54),
-                onPressed: () => _showPCForm(context, pc),
-                tooltip: 'Edit spesifikasi',
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Colors.white38),
-                onPressed: () => _confirmDeletePC(context, pc),
-                tooltip: 'Hapus PC',
               ),
             ],
-          ),
-          const SizedBox(height: 12),
-
-          // Specs detail chip box
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: cardSurface,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
+            const SizedBox(height: 12),
+            Row(
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.memory_rounded, size: 14, color: Colors.white54),
-                    const SizedBox(width: 6),
-                    Expanded(child: tx('Prosesor', 12, c: Colors.white54)),
-                    tx(pc.processor, 12, w: FontWeight.w600, c: Colors.white),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    const Icon(Icons.storage_rounded, size: 14, color: Colors.white54),
-                    const SizedBox(width: 6),
-                    Expanded(child: tx('RAM', 12, c: Colors.white54)),
-                    tx(pc.ram, 12, w: FontWeight.w600, c: yel),
-                  ],
-                ),
-                if (pc.notes != null && pc.notes!.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.sticky_note_2_outlined, size: 14, color: Colors.white54),
-                      const SizedBox(width: 6),
-                      Expanded(child: tx('Catatan', 12, c: Colors.white54)),
-                      Expanded(
-                        flex: 2,
-                        child: tx(pc.notes!, 12, c: Colors.white70, al: TextAlign.right),
-                      ),
-                    ],
+                Flexible(
+                  child: OutlinedButton.icon(
+                    onPressed: onDetail,
+                    icon: const Icon(Icons.info_outline_rounded, size: 14),
+                    label: const Text('Spesifikasi', style: TextStyle(fontSize: 11)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white70,
+                      minimumSize: const Size(0, 38),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      side: BorderSide(color: a(mint, 0.18)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
                   ),
-                ],
+                ),
+                const SizedBox(width: 8),
+                if (report != null)
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: online ? () => onCancel(report!) : null,
+                      icon: const Icon(Icons.close_rounded, size: 14),
+                      label: const Text('Batalkan',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: a(org, 0.16),
+                        foregroundColor: org,
+                        minimumSize: const Size(0, 38),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  )
+                else
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: online ? onReport : null,
+                      icon: const Icon(Icons.report_gmailerrorred_rounded, size: 14),
+                      label: Text(
+                        _bermasalah ? 'Lapor lagi' : 'Ajukan Kerusakan',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: a(yel, 0.16),
+                        foregroundColor: yel,
+                        minimumSize: const Size(0, 38),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
               ],
             ),
-          ),
-          const SizedBox(height: 10),
+          ],
+        ),
+        borderColor: _bermasalah ? a(org, 0.28) : null,
+      );
+}
 
-          // Action button to switch status
-          SizedBox(
-            width: double.infinity,
-            child: btn(
-              isNormal ? 'Tandai Sebagai Rusak' : 'Tandai Normal (Siap Pakai)',
-              () {
-                HiveDatabaseService.instance.togglePCStatus(pc.id);
-                snack(
-                  context,
-                  isNormal
-                      ? '${pc.pcNumber} ditandai sebagai Rusak'
-                      : '${pc.pcNumber} ditandai kembali Normal!',
-                  isError: isNormal,
-                );
-              },
-              tonal: true,
-              icon: isNormal ? Icons.warning_amber_rounded : Icons.check_circle_outline_rounded,
+class _PcPickerSheet extends StatelessWidget {
+  final List<PcAsset> pcs;
+  const _PcPickerSheet({required this.pcs});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: const BoxDecoration(
+          color: card,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border(top: BorderSide(color: cardBorder, width: 1.2)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            tx('Pilih Unit Komputer', 17, w: FontWeight.w700),
+            const SizedBox(height: 4),
+            tx('Pilih unit yang ingin dilaporkan kerusakannya.', 12, c: secText),
+            const SizedBox(height: 16),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final p in pcs)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: a(mint, 0.10),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.desktop_windows_rounded, color: mint, size: 18),
+                      ),
+                      title: tx(p.codename, 13.5, w: FontWeight.w600),
+                      subtitle: tx(p.specLine, 11, c: secText),
+                      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white38),
+                      onTap: () => Navigator.pop(context, p),
+                    ),
+                ],
+              ),
             ),
-          ),
+          ],
+        ),
+      );
+}
+
+class _LabGroupTitle extends StatelessWidget {
+  final Lab? lab;
+  final int count;
+
+  const _LabGroupTitle({required this.lab, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = lab;
+    final title = l == null ? 'Lab' : (l.code.isEmpty ? l.name : '${l.code} · ${l.name}');
+    return Padding(
+      padding: const EdgeInsets.only(top: 6, bottom: 8),
+      child: Row(
+        children: [
+          tx(title, 12.5, c: mint, w: FontWeight.w700),
+          const SizedBox(width: 8),
+          tx('$count unit', 11, c: secText),
+          const Expanded(child: SizedBox.shrink()),
         ],
       ),
     );
   }
+}
+
+class _PcDetailSheet extends StatelessWidget {
+  final PcAsset pc;
+  final bool online;
+  final VoidCallback onReport;
+
+  const _PcDetailSheet({
+    required this.pc,
+    required this.online,
+    required this.onReport,
+  });
+
+  Widget _row(String label, String? value) => Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 108, child: tx(label, 11.5, c: secText)),
+            Expanded(child: tx((value == null || value.trim().isEmpty) ? '—' : value, 12.5,
+                w: FontWeight.w600)),
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: const BoxDecoration(
+          color: card,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border(top: BorderSide(color: cardBorder, width: 1.2)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(child: tx(pc.codename, 19, w: FontWeight.w700)),
+                AssetChip(pc.status),
+              ],
+            ),
+            const SizedBox(height: 18),
+            _row('Prosesor', pc.processor),
+            _row('RAM', pc.ram),
+            _row('Penyimpanan', pc.storage),
+            _row('Grafis', pc.gpu),
+            _row('Mouse', pc.mouseSpec),
+            _row('Keyboard', pc.keyboardSpec),
+            _row('Posisi', pc.location),
+            _row('Catatan admin', pc.notes),
+            const SizedBox(height: 8),
+            btn(online ? 'Ajukan Kerusakan' : 'Butuh koneksi untuk melapor',
+                online ? onReport : () {},
+                icon: Icons.report_gmailerrorred_rounded),
+          ],
+        ),
+      );
 }

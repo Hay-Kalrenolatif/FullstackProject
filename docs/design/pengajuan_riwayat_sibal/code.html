@@ -1,0 +1,413 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#0f141a;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-tertiary-fixed": "#2c0051", "tertiary-container": "#e1bfff", "surface-container-high": "#252a31", "surface-container-low": "#171c22", "on-surface-variant": "#bbcac4", "surface-bright": "#353a40", "on-secondary": "#2e3300", "secondary-container": "#8b9805", "surface": "#0f141a", "on-surface": "#dee3eb", "tertiary-fixed": "#f0dbff", "inverse-surface": "#dee3eb", "surface-container-lowest": "#0a0f14", "surface-card-elevated": "#1C2729", "on-error-container": "#ffdad6", "outline-variant": "#3c4a45", "surface-variant": "#30353c", "on-secondary-fixed": "#1a1e00", "warning-amber": "#F59E0B", "border-glow-amber": "#F59E0B40", "tertiary-fixed-dim": "#ddb8ff", "surface-container": "#1b2026", "background": "#0f141a", "on-error": "#690005", "border-subtle": "#253438", "primary-fixed": "#72f9d8", "primary-container": "#58e2c2", "surface-dim": "#0f141a", "on-secondary-fixed-variant": "#444b00", "surface-card": "#182326", "error": "#ffb4ab", "on-background": "#dee3eb", "warning-amber-tint": "#F6AD55", "on-tertiary-container": "#7237ac", "on-secondary-container": "#282c00", "primary-fixed-dim": "#51dcbc", "secondary-fixed": "#ddec5f", "secondary": "#c1d045", "border-glow-mint": "#58E2C240", "secondary-fixed-dim": "#c1d045", "primary": "#78ffde", "on-tertiary": "#490081", "on-primary-fixed": "#002019", "tertiary": "#f4e2ff", "inverse-on-surface": "#2c3137", "surface-tint": "#51dcbc", "on-tertiary-fixed-variant": "#62259b", "on-primary": "#00382d", "inverse-primary": "#006b58", "on-primary-fixed-variant": "#005142", "surface-card-subtle": "#161F22", "on-primary-container": "#006251", "error-container": "#93000a", "outline": "#86948e", "status-mint": "#3BD6B0", "surface-container-highest": "#30353c" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.25rem", "margin": "1rem", "space-sm": "0.5rem", "gutter": "1rem", "space-md": "1rem", "space-xl": "2rem", "space-lg": "1.5rem" }, "fontFamily": { "headline-lg-mobile": ["Inter"], "label-md": ["Inter"], "headline-md": ["Inter"], "headline-sm": ["Inter"], "label-sm": ["Inter"], "label-lg": ["Inter"], "body-lg": ["Inter"], "body-md": ["Inter"], "body-sm": ["Inter"], "display-stat": ["Inter"], "headline-lg": ["Inter"] }, "fontSize": { "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }], "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "display-stat": ["28px", { "lineHeight": "34px", "fontWeight": "700" }], "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }] } } } };</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 inset-x-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl pt-safe shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="h-16 px-space-md flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight uppercase truncate">SIBAL</span><span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full bg-surface-card text-status-mint font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-status-mint animate-pulse"></span>ONLINE</span></div><span class="font-label-sm text-label-sm text-on-surface-variant truncate">Pengajuan</span></div></div><div class="flex items-center gap-space-sm flex-shrink-0"><button class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-28 px-space-md bg-surface min-h-screen"><div class="flex flex-col w-full gap-space-md">
+<!-- Lab Location Filter Segment -->
+<section class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Pilih Ruang Lab</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-[14px]">tune</span> Filter Aktif
+      </span>
+</div>
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1" id="labFilterGroup">
+<button class="lab-pill px-space-md py-1.5 rounded-full font-label-md text-label-md transition-all flex items-center gap-1.5 bg-secondary text-on-secondary shadow-sm" data-lab="Lab 1" type="button">
+<span class="w-2 h-2 rounded-full bg-on-secondary"></span>
+<span class="">Lab 1 (Utama)</span>
+</button>
+<button class="lab-pill px-space-md py-1.5 rounded-full font-label-md text-label-md transition-all flex items-center gap-1.5 bg-surface-card text-on-surface-variant hover:text-on-surface" data-lab="Lab 2" type="button">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="">Lab 2 (Multimedia)</span>
+</button>
+<button class="lab-pill px-space-md py-1.5 rounded-full font-label-md text-label-md transition-all flex items-center gap-1.5 bg-surface-card text-on-surface-variant hover:text-on-surface" data-lab="Lab 3" type="button">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="">Lab 3 (Jaringan)</span>
+</button>
+</div>
+</section>
+<!-- Metric Overview Cards -->
+<section class="grid grid-cols-3 gap-space-xs">
+<!-- In Progress -->
+<div class="flex flex-col p-3 rounded-xl bg-surface-card relative overflow-hidden shadow-sm">
+<div class="flex items-center justify-between mb-1">
+<span class="w-2 h-2 rounded-full bg-warning-amber animate-pulse"></span>
+<span class="material-symbols-outlined text-[16px] text-warning-amber">hourglass_top</span>
+</div>
+<span class="font-display-stat text-display-stat text-warning-amber leading-none">2</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Diproses</span>
+<span class="font-label-sm text-[10px] text-warning-amber-tint">Butuh Tindakan</span>
+</div>
+<!-- Completed -->
+<div class="flex flex-col p-3 rounded-xl bg-surface-card relative overflow-hidden shadow-sm">
+<div class="flex items-center justify-between mb-1">
+<span class="w-2 h-2 rounded-full bg-status-mint"></span>
+<span class="material-symbols-outlined text-[16px] text-status-mint">verified</span>
+</div>
+<span class="font-display-stat text-display-stat text-primary leading-none">14</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Selesai</span>
+<span class="font-label-sm text-[10px] text-primary-fixed-dim">Tiket Beres</span>
+</div>
+<!-- Canceled / Verification -->
+<div class="flex flex-col p-3 rounded-xl bg-surface-card relative overflow-hidden shadow-sm">
+<div class="flex items-center justify-between mb-1">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">cancel</span>
+</div>
+<span class="font-display-stat text-display-stat text-on-surface leading-none">1</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Dibatalkan</span>
+<span class="font-label-sm text-[10px] text-outline">Verifikasi Batal</span>
+</div>
+</section>
+<!-- Ticket Submission FAB Quick Banner -->
+<section class="p-space-md rounded-xl bg-gradient-to-r from-surface-card-elevated via-surface-card to-surface-card flex items-center justify-between gap-space-sm shadow-md">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-xl bg-primary-container/20 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-[24px]">add_task</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate">Kendala Lab Baru?</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Laporkan unit rusak atau servis periodik</span>
+</div>
+</div>
+<button class="px-space-md py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1 flex-shrink-0 transition-transform active:scale-95 shadow-sm" id="createTicketBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="">Buat</span>
+</button>
+</section>
+<!-- Subcategory Filter Pills -->
+<section class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs overflow-x-auto" id="typeFilterGroup">
+<button class="type-pill px-space-md py-1.5 rounded-full font-label-md text-label-md transition-all bg-primary-container text-on-primary-container flex items-center gap-1.5 shadow-sm" data-filter="all" type="button">
+<span class="">Semua Layanan</span>
+<span class="px-1.5 py-0.2 bg-on-primary-container/20 rounded-full font-label-sm text-[10px]">3</span>
+</button>
+<button class="type-pill px-space-md py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-card text-on-surface-variant hover:text-on-surface flex items-center gap-1.5" data-filter="pc" type="button">
+<span class="material-symbols-outlined text-[16px]">desktop_windows</span>
+<span class="">PC Unit</span>
+</button>
+<button class="type-pill px-space-md py-1.5 rounded-full font-label-md text-label-md transition-all bg-surface-card text-on-surface-variant hover:text-on-surface flex items-center gap-1.5" data-filter="support" type="button">
+<span class="material-symbols-outlined text-[16px]">cable</span>
+<span class="">Inventaris Pendukung</span>
+</button>
+</div>
+</section>
+<!-- Service Request Card List -->
+<section class="flex flex-col gap-space-sm" id="ticketList">
+<!-- Ticket #SRV-104 (Sedang Diperbaiki - Orange) -->
+<article class="ticket-item p-4 rounded-xl bg-surface-card flex flex-col gap-3 shadow-md transition-all border-subtle" data-ticket="SRV-104" data-type="pc">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center flex-shrink-0 text-warning-amber">
+<span class="material-symbols-outlined text-[22px]">electrical_services</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-warning-amber font-semibold tracking-wide">#SRV-104</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lab 1</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Penggantian Power Supply PC-03</h3>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-warning-amber font-label-sm text-label-sm flex-shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-amber"></span>
+<span class="">Sedang Diperbaiki</span>
+</span>
+</div>
+<!-- Spec & Meta Grid -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-surface-card-subtle text-on-surface-variant">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-outline">dns</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[10px] uppercase text-outline">Target Aset</span>
+<span class="font-label-md text-label-md text-on-surface truncate">Workstation PC-03</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[10px] uppercase text-outline">Estimasi Selesai</span>
+<span class="font-label-md text-label-md text-warning-amber truncate">Hari Ini, 16:30</span>
+</div>
+</div>
+</div>
+<!-- Detail snippet -->
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Kerusakan: Unit drop tiba-tiba saat rendering benchmark. Sparepart pengganti PSU 650W Gold sudah dialokasikan dari gudang SIBAL.
+      </p>
+<!-- Action Footer -->
+<div class="flex items-center justify-between pt-1 gap-2">
+<button class="cancel-ticket-btn px-3 py-1.5 rounded-lg bg-surface-container-high text-warning-amber hover:bg-error-container hover:text-on-error-container font-label-sm text-label-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+<span class="">Batalkan Pengajuan</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface hover:text-primary font-label-sm text-label-sm flex items-center gap-1 transition-colors" type="button">
+<span class="">Log Teknisi</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- Ticket #SRV-105 (Menunggu Verifikasi Teknisi - Orange) -->
+<article class="ticket-item p-4 rounded-xl bg-surface-card flex flex-col gap-3 shadow-md transition-all border-subtle" data-ticket="SRV-105" data-type="support">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center flex-shrink-0 text-warning-amber-tint">
+<span class="material-symbols-outlined text-[22px]">videocam</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-warning-amber font-semibold tracking-wide">#SRV-105</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lab 1</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Lampu Proyektor Epson HDMI</h3>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-warning-amber-tint font-label-sm text-label-sm flex-shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-amber-tint"></span>
+<span class="">Menunggu Verifikasi</span>
+</span>
+</div>
+<!-- Spec & Meta Grid -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-surface-card-subtle text-on-surface-variant">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-outline">inventory</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[10px] uppercase text-outline">Kategori</span>
+<span class="font-label-md text-label-md text-on-surface truncate">Infocus EB-X400</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[10px] uppercase text-outline">Pelapor</span>
+<span class="font-label-md text-label-md text-on-surface truncate">Laboran Praktikum</span>
+</div>
+</div>
+</div>
+<!-- Detail snippet -->
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Indikator lampu menyala jingga berkedip, kecerahan layar berkurang drastis pada presentasi kuliah pagi.
+      </p>
+<!-- Action Footer -->
+<div class="flex items-center justify-between pt-1 gap-2">
+<button class="cancel-ticket-btn px-3 py-1.5 rounded-lg bg-surface-container-high text-warning-amber hover:bg-error-container hover:text-on-error-container font-label-sm text-label-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+<span class="">Batalkan Pengajuan</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface hover:text-primary font-label-sm text-label-sm flex items-center gap-1 transition-colors" type="button">
+<span class="">Prioritas: Sedang</span>
+<span class="material-symbols-outlined text-[16px]">info</span>
+</button>
+</div>
+</article>
+<!-- Ticket #SRV-103 (Selesai - Green Card) -->
+<article class="ticket-item p-4 rounded-xl bg-surface-card flex flex-col gap-3 shadow-md transition-all border-subtle" data-ticket="SRV-103" data-type="support">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center flex-shrink-0 text-status-mint">
+<span class="material-symbols-outlined text-[22px]">settings_ethernet</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-primary font-semibold tracking-wide">#SRV-103</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lab 1</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Kalibrasi Tester Kabel &amp; LAN</h3>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-status-mint font-label-sm text-label-sm flex-shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-status-mint"></span>
+<span class="">Selesai</span>
+</span>
+</div>
+<!-- Spec & Meta Grid -->
+<div class="grid grid-cols-2 gap-2 p-2.5 rounded-lg bg-surface-card-subtle text-on-surface-variant">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-status-mint">check_circle</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[10px] uppercase text-outline">Verifikator</span>
+<span class="font-label-md text-label-md text-on-surface truncate">Teknisi Ari (NIP 209)</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[16px] text-primary">event_available</span>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-[10px] uppercase text-outline">Tanggal Selesai</span>
+<span class="font-label-md text-label-md text-status-mint truncate">Kemarin, 14:15</span>
+</div>
+</div>
+</div>
+<!-- Detail snippet -->
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Pengecekan pinout 24 channel Fluke MicroScanner2 dan sertifikasi kelayakan modul lab jaringan semester genap telah tervalidasi.
+      </p>
+<!-- Action Footer -->
+<div class="flex items-center justify-between pt-1 gap-2">
+<button class="detail-report-btn w-full py-2 px-3 rounded-lg bg-surface-card-elevated text-primary font-label-sm text-label-sm flex items-center justify-center gap-1.5 hover:bg-primary-container hover:text-on-primary-container transition-all border-subtle" type="button">
+<span class="material-symbols-outlined text-[18px]">description</span>
+<span class="">Lihat Berita Acara / Detail</span>
+</button>
+</div>
+</article>
+</section>
+<!-- Interactive Modal: Berita Acara Detail -->
+<div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4" id="modalReport">
+<div class="w-full max-w-sm rounded-xl bg-surface-card-elevated p-space-md flex flex-col gap-3 shadow-2xl relative">
+<div class="flex items-center justify-between pb-2 border-b border-subtle">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">verified</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">Berita Acara Servis</span>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface" id="closeReportModal" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<div class="p-2.5 rounded-lg bg-surface-card-subtle flex flex-col gap-1">
+<span class="font-label-sm text-[11px] text-outline uppercase">Kode Layanan</span>
+<span class="font-headline-sm text-headline-sm text-primary">#SRV-103-CALIB</span>
+<span class="font-label-md text-label-md text-on-surface">Kalibrasi Tester Kabel &amp; LAN</span>
+</div>
+<div class="grid grid-cols-2 gap-2 text-[12px]">
+<div><span class="text-outline">Lokasi:</span> <strong class="text-on-surface">Lab 1</strong></div>
+<div><span class="text-outline">Petugas:</span> <strong class="text-on-surface">Ari Prasetyo</strong></div>
+<div><span class="text-outline">Status Fisik:</span> <strong class="text-status-mint">Normal (100%)</strong></div>
+<div><span class="text-outline">Garansi Lab:</span> <strong class="text-on-surface">6 Bulan</strong></div>
+</div>
+<p class="mt-1 text-on-surface/90 text-[12px] bg-surface-card p-2 rounded">
+          Hasil uji sertifikasi laboratorium menyatakan 8 node port RJ-45 responsif tanpa attenuation loss yang melebihi ambang batas toleransi IEEE 802.3.
+        </p>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="w-full py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md" id="closeReportModalBtn" type="button">Tutup</button>
+<button class="w-full py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md flex items-center justify-center gap-1" id="downloadPdfMock" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span class="">Unduh PDF</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Toast Notification Feedback -->
+<div class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface shadow-2xl flex items-center gap-2 font-label-md text-label-md opacity-0 pointer-events-none transition-all duration-300" id="actionToast">
+<span class="material-symbols-outlined text-status-mint text-[18px]" id="toastIcon">check_circle</span>
+<span id="toastMsg" class="">Tindakan berhasil diproses.</span>
+</div>
+</div>
+<script>
+  (function initServiceApp() {
+    const labPills = document.querySelectorAll('.lab-pill');
+    const typePills = document.querySelectorAll('.type-pill');
+    const ticketCards = document.querySelectorAll('.ticket-item');
+    const toast = document.getElementById('actionToast');
+    const toastMsg = document.getElementById('toastMsg');
+    const toastIcon = document.getElementById('toastIcon');
+
+    function showToast(message, iconName = 'check_circle', isWarn = false) {
+      toastMsg.textContent = message;
+      toastIcon.textContent = iconName;
+      toastIcon.className = `material-symbols-outlined text-[18px] ${isWarn ? 'text-warning-amber' : 'text-status-mint'}`;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2400);
+    }
+
+    // Lab Selector Chips
+    labPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        labPills.forEach(p => {
+          p.classList.remove('bg-secondary', 'text-on-secondary');
+          p.classList.add('bg-surface-card', 'text-on-surface-variant');
+          const dot = p.querySelector('span:first-child');
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-outline';
+        });
+        pill.classList.remove('bg-surface-card', 'text-on-surface-variant');
+        pill.classList.add('bg-secondary', 'text-on-secondary');
+        const activeDot = pill.querySelector('span:first-child');
+        if (activeDot) activeDot.className = 'w-2 h-2 rounded-full bg-on-secondary';
+
+        const labName = pill.getAttribute('data-lab');
+        showToast(`Beralih ke arsip data ${labName}`);
+      });
+    });
+
+    // Subcategory Filter Pills (Semua, PC, Inventaris Pendukung)
+    typePills.forEach(btn => {
+      btn.addEventListener('click', () => {
+        typePills.forEach(b => {
+          b.classList.remove('bg-primary-container', 'text-on-primary-container');
+          b.classList.add('bg-surface-card', 'text-on-surface-variant');
+        });
+        btn.classList.remove('bg-surface-card', 'text-on-surface-variant');
+        btn.classList.add('bg-primary-container', 'text-on-primary-container');
+
+        const filter = btn.getAttribute('data-filter');
+        ticketCards.forEach(card => {
+          const type = card.getAttribute('data-type');
+          if (filter === 'all' || filter === type) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    // Cancel Ticket Flow
+    document.querySelectorAll('.cancel-ticket-btn').forEach(cancelBtn => {
+      cancelBtn.addEventListener('click', (e) => {
+        const card = e.target.closest('.ticket-item');
+        const ticketId = card.getAttribute('data-ticket');
+        const confirmCancel = confirm(`Batalkan tiket pengajuan #${ticketId}?`);
+        if (confirmCancel) {
+          card.style.opacity = '0.4';
+          card.style.transform = 'scale(0.97)';
+          setTimeout(() => {
+            card.remove();
+            showToast(`Pengajuan #${ticketId} berhasil dibatalkan`, 'info', true);
+          }, 200);
+        }
+      });
+    });
+
+    // Modal Report Detail
+    const modalReport = document.getElementById('modalReport');
+    const closeBtns = [document.getElementById('closeReportModal'), document.getElementById('closeReportModalBtn')];
+    document.querySelectorAll('.detail-report-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        modalReport.classList.remove('hidden');
+        modalReport.classList.add('flex');
+      });
+    });
+
+    closeBtns.forEach(btn => {
+      if (btn) {
+        btn.addEventListener('click', () => {
+          modalReport.classList.add('hidden');
+          modalReport.classList.remove('flex');
+        });
+      }
+    });
+
+    document.getElementById('downloadPdfMock')?.addEventListener('click', () => {
+      showToast('Mengunduh Berita Acara (#SRV-103.pdf)...');
+      setTimeout(() => {
+        modalReport.classList.add('hidden');
+        modalReport.classList.remove('flex');
+      }, 700);
+    });
+
+    document.getElementById('createTicketBtn')?.addEventListener('click', () => {
+      showToast('Form Pengajuan Baru SIBAL terbuka', 'add_task');
+    });
+  })();
+</script></main><nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.5)]" data-active-classes="text-primary font-label-md shadow-[0_0_16px_rgba(88,226,194,0.25)]"><div class="flex items-center justify-around h-16 px-space-xs"><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm tracking-tight">Dashboard</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="unit-pc" href="#"><span class="material-symbols-outlined text-[22px]">desktop_windows</span><span class="font-label-sm text-label-sm tracking-tight">Unit PC</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="inventaris" href="#"><span class="material-symbols-outlined text-[22px]">inventory_2</span><span class="font-label-sm text-label-sm tracking-tight">Inventaris</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl transition-all text-primary font-label-md" data-path="pengajuan" href="#"><span class="material-symbols-outlined text-[22px]">build</span><span class="font-label-sm text-label-sm tracking-tight">Pengajuan</span></a><a class="flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 rounded-xl text-on-surface-variant hover:text-on-surface transition-all" data-path="akun" href="#"><span class="material-symbols-outlined text-[22px]">person</span><span class="font-label-sm text-label-sm tracking-tight">Akun</span></a></div></nav>
+
+</body></html>

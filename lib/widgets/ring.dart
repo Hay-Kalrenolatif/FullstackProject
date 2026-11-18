@@ -48,7 +48,7 @@ class RP extends CustomPainter {
       final trackPaint = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = w
-        ..color = a(Colors.white, 0.07);
+        ..color = a(cardSurface, 0.6);
       cv.drawCircle(center, r, trackPaint);
 
       // Active Arc
