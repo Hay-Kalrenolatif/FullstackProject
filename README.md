@@ -1,4 +1,4 @@
-# SIBAL — Sistem Inventaris & Manajemen Lab
+# SIBAL — Sistem Inventaris Barang & Admintrasi Lab
 
 Aplikasi manajemen inventaris laboratorium komputer: spesifikasi PC, barang
 pendukung, riwayat perawatan, dan **pengajuan kerusakan dengan alur persetujuan
